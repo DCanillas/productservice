@@ -42,8 +42,8 @@ public class CustomerController {
                                                    @RequestBody Customer customerDetails) throws ResolutionException{
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
-        customer.setEmail(customerDetails.getEmail());
         customer.setName(customerDetails.getName());
+        customer.setEmail(customerDetails.getEmail());
         customerRepository.save(customer);
         return ResponseEntity.ok().body(customer);
     }
