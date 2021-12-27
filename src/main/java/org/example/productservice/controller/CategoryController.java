@@ -17,7 +17,7 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     // get all categories
-    @GetMapping("/categories")
+    @GetMapping("")
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }

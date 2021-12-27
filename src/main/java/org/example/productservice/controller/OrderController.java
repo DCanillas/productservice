@@ -27,7 +27,7 @@ public class OrderController {
     private ProductRepository productRepository;
 
     // get all orders
-    @GetMapping("/orders")
+    @GetMapping("")
     public List<Order> getAllOrders(){
         return orderRepository.findAll();
     }
