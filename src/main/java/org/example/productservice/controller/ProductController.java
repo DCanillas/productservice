@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.module.ResolutionException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost::3306")
 @RestController
 @RequestMapping("${api.version}/product")
 public class ProductController {
