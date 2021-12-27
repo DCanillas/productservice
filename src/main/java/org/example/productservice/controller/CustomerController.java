@@ -13,8 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/customer")
 public class CustomerController {
-    @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    public CustomerController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     // get all customers
     @GetMapping("")

@@ -13,8 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/category")
 public class CategoryController {
-    @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    public CategoryController(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     // get all categories
     @GetMapping("")

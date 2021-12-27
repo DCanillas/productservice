@@ -15,11 +15,14 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/product")
 public class ProductController {
-    @Autowired
     private ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    public ProductController(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     // get all products
     @GetMapping("")

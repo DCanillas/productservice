@@ -17,14 +17,16 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/order")
 public class OrderController {
-    @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
     private CustomerRepository customerRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    public OrderController(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
+    }
 
     // get all orders
     @GetMapping("")
