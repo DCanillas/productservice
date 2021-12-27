@@ -1,7 +1,7 @@
 package org.example.productservice.controller;
 
-import org.example.productservice.repository.CustomerRepository;
 import org.example.modelproject.Customer;
+import org.example.productservice.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,25 +11,25 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost::3306")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("${api.version}/customer")
 public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    // create get all customers api
+    // get all customers
     @GetMapping("/customers")
     public List<Customer> getAllCustomers(){
         return customerRepository.findAll();
     }
 
-    @PostMapping("/customer")
     // create customer
+    @PostMapping("")
     public Customer createCustomer(@RequestBody Customer customer){
         return customerRepository.save(customer);
     }
 
     // get customer by id
-    @GetMapping("/customer/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable(value = "id") long customerId) throws ResolutionException{
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     // update customer
-    @PutMapping("/customer/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") long customerId,
                                                    @RequestBody Customer customerDetails) throws ResolutionException{
         Customer customer = customerRepository.findById(customerId)
@@ -49,7 +49,7 @@ public class CustomerController {
     }
 
     // delete customer by id
-    @DeleteMapping("/customer/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteCustomer(@PathVariable(value = "id") long customerId) throws ResolutionException{
         customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));

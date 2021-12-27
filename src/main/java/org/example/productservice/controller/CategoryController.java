@@ -11,25 +11,25 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost::3306")
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("${api.version}/category")
 public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // create get all categories api
+    // get all categories
     @GetMapping("/categories")
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
 
-    @PostMapping("/category")
+    @PostMapping("")
     // create category
     public Category createCategory(@RequestBody Category category){
         return categoryRepository.save(category);
     }
 
     // get category by id
-    @GetMapping("/category/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable(value = "id") long categoryId) throws ResolutionException{
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
@@ -37,7 +37,7 @@ public class CategoryController {
     }
 
     // update category
-    @PutMapping("/category/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable(value = "id") long categoryId,
                                                    @RequestBody Category categoryDetails) throws ResolutionException{
         Category category = categoryRepository.findById(categoryId)
@@ -49,8 +49,8 @@ public class CategoryController {
     }
 
     // delete category by id
-    @DeleteMapping("/category/{id}")
-    public ResponseEntity<Object> deleteCategory(@PathVariable(value = "id") long categoryId) throws ResolutionException{
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteCategory(@PathVariable(value = "id") long categoryId) throws ResolutionException {
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
         categoryRepository.deleteById(categoryId);
