@@ -1,7 +1,7 @@
 package org.example.productservice.controller;
 
-import org.example.modelproject.Category;
-import org.example.productservice.repository.CategoryRepository;
+import org.example.productservice.dto.CategoryDTO;
+import org.example.productservice.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,51 +12,42 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/category")
 public class CategoryController {
-    private CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     // get all categories
     @GetMapping("")
-    public List<Category> getAllCategories(){
-        return categoryRepository.findAll();
+    public List<CategoryDTO> getAllCategories(){
+        return categoryService.getAllCategories();
     }
 
     @PostMapping("")
     // create category
-    public Category createCategory(@RequestBody Category category){
-        return categoryRepository.save(category);
+    public CategoryDTO createCategory(@RequestBody CategoryDTO category){
+        return categoryService.createCategory(category);
     }
 
     // get category by id
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable(value = "id") long categoryId) throws ResolutionException{
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
-        return ResponseEntity.ok().body(category);
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable(value = "id") long categoryId) throws ResolutionException{
+        return ResponseEntity.ok().body(categoryService.getCategoryById(categoryId));
     }
 
     // update category
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable(value = "id") long categoryId,
-                                                   @RequestBody Category categoryDetails) throws ResolutionException{
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
-        category.setName(categoryDetails.getName());
-        category.setDescription(categoryDetails.getDescription());
-        categoryRepository.save(category);
-        return ResponseEntity.ok().body(category);
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable(value = "id") long categoryId,
+                                                   @RequestBody CategoryDTO categoryDetails) throws ResolutionException{
+        return ResponseEntity.ok().body(categoryService.updateCategory(categoryId, categoryDetails));
     }
 
     // delete category by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCategory(@PathVariable(value = "id") long categoryId) throws ResolutionException {
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
-        categoryRepository.deleteById(categoryId);
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable(value = "id") long categoryId) throws ResolutionException {
+        categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok().build();
     }
 

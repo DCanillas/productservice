@@ -1,11 +1,7 @@
 package org.example.productservice.controller;
 
-import org.example.modelproject.Customer;
-import org.example.modelproject.Order;
-import org.example.modelproject.Product;
-import org.example.productservice.repository.CustomerRepository;
-import org.example.productservice.repository.OrderRepository;
-import org.example.productservice.repository.ProductRepository;
+import org.example.productservice.dto.OrderDTO;
+import org.example.productservice.service.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,67 +12,49 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.version}/order")
 public class OrderController {
-    private OrderRepository orderRepository;
-    private CustomerRepository customerRepository;
-    private ProductRepository productRepository;
+    private final OrderServiceImpl orderService;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository) {
-        this.orderRepository = orderRepository;
-        this.customerRepository = customerRepository;
-        this.productRepository = productRepository;
+    public OrderController(OrderServiceImpl orderService) {
+        this.orderService = orderService;
     }
 
     // get all orders
     @GetMapping("")
-    public List<Order> getAllOrders(){
-        return orderRepository.findAll();
+    public List<OrderDTO> getAllOrders(){
+        return orderService.getAllOrders();
     }
 
-    @PostMapping("")
     // create order
-    public Order createOrder(@RequestBody Order order){
-        return orderRepository.save(order);
+    @PostMapping("")
+    public OrderDTO createOrder(){
+        return orderService.createOrder();
     }
 
     // get order by id
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable(value = "id") long orderId) throws ResolutionException{
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
-        return ResponseEntity.ok().body(order);
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable(value = "id") long orderId) throws ResolutionException{
+        return ResponseEntity.ok().body(orderService.getOrderById(orderId));
     }
 
     // assign customer to order
     @PutMapping("/{orderId}/customer/{customerId}")
-    public Order updateOrder(@PathVariable(value = "orderId") long orderId,
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable(value = "orderId") long orderId,
                                              @PathVariable(value = "customerId") long customerId) throws ResolutionException{
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
-        order.setCustomer(customer);
-        return orderRepository.save(order);
+        return ResponseEntity.ok().body(orderService.updateOrder(orderId, customerId));
     }
 
     // assign product to order
     @PutMapping("{orderId}/product/{productId}")
-    public Order assignProducttoOrder(@PathVariable(value="orderId") long orderId,
+    public OrderDTO assignProducttoOrder(@PathVariable(value="orderId") long orderId,
                                                           @PathVariable(value="productId") long productId) throws ResolutionException{
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("product not found for this id :: " + productId));
-        order.addProduct(product);
-        return orderRepository.save(order);
+        return orderService.assignProducttoOrder(orderId, productId);
     }
 
     // delete order by id
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOrder(@PathVariable(value = "id") long orderId) throws ResolutionException{
-        orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
-        orderRepository.deleteById(orderId);
+        orderService.deleteOrder(orderId);
         return ResponseEntity.ok().build();
     }
 
