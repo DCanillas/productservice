@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Data
 @NoArgsConstructor
-@ToString(callSuper=true, includeFieldNames=true)
+@ToString(includeFieldNames=true)
 public class CategoryDTO {
 
     private long id;

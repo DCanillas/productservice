@@ -9,6 +9,6 @@ public interface OrderService {
     OrderDTO createOrder();
     OrderDTO getOrderById(long orderId);
     OrderDTO updateOrder(long orderId, long customerId);
-    OrderDTO assignProducttoOrder(long orderId, long productId);
+    OrderDTO assignProductToOrder(long orderId, long productId);
     void deleteOrder(long orderId);
 }

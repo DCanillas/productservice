@@ -10,5 +10,5 @@ public interface ProductService {
     ProductDTO getProductById(long productId);
     ProductDTO updateProduct(long productId, ProductDTO productDetails);
     void deleteProduct(long productId);
-    ProductDTO assignCategorytoProduct(long productId, long categoryId);
+    ProductDTO assignCategoryToProduct(long productId, long categoryId);
 }

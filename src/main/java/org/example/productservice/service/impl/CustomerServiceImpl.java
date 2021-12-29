@@ -1,5 +1,6 @@
 package org.example.productservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.Customer;
 import org.example.productservice.dto.CustomerDTO;
 import org.example.productservice.repository.CustomerRepository;
@@ -11,6 +12,7 @@ import java.lang.module.ResolutionException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
@@ -23,28 +25,38 @@ public class CustomerServiceImpl implements CustomerService {
     // get all customers
     @Override
     public List<CustomerDTO> getAllCustomers(){
-        return mapListCustomerToDTO(customerRepository.findAll());
+        log.info("CustomerServiceImpl - Method getAllCustomers");
+        List<CustomerDTO> customersDTO = mapListCustomerToDTO(customerRepository.findAll());
+        log.info("CustomerServiceImpl - Return getAllCustomers: "+customersDTO);
+        return customersDTO;
     }
 
     // create customer
     @Override
     public CustomerDTO createCustomer(CustomerDTO customer){
-        return mapCustomerToDTO(customerRepository.save(mapDTOToCustomer(customer)));
+        log.info("CustomerServiceImpl - Method createCustomer");
+        Customer customerCreated = customerRepository.save(mapDTOToCustomer(customer));
+        log.info("CustomerServiceImpl - Created createCustomer: "+customerCreated);
+        return mapCustomerToDTO(customerCreated);
     }
 
     // get customer by id
     @Override
     public CustomerDTO getCustomerById(long customerId) throws ResolutionException {
+        log.info("CustomerServiceImpl - Method getCustomerById");
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+        log.info("CustomerServiceImpl - Found getCustomerById: "+customer);
         return mapCustomerToDTO(customer);
     }
 
     // update customer
     @Override
     public CustomerDTO updateCustomer(long customerId, CustomerDTO customerDetails) throws ResolutionException{
+        log.info("CustomerServiceImpl - Method updateCustomer");
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+        log.info("CustomerServiceImpl - Found updateCustomer: "+customer);
         customer.setName(customerDetails.getName());
         customer.setEmail(customerDetails.getEmail());
         customerRepository.save(customer);
@@ -54,8 +66,10 @@ public class CustomerServiceImpl implements CustomerService {
     // delete customer by id
     @Override
     public void deleteCustomer(long customerId) throws ResolutionException{
-        customerRepository.findById(customerId)
+        log.info("CustomerServiceImpl - Method deleteCustomer");
+        Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+        log.info("CustomerServiceImpl - Found deleteCustomer: "+customer);
         customerRepository.deleteById(customerId);
     }
 

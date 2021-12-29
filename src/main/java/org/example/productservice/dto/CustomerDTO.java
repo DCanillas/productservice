@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@ToString(exclude = "orders", callSuper=true, includeFieldNames=true)
+@ToString(exclude = "orders", includeFieldNames=true)
 @EqualsAndHashCode(exclude="orders")
 public class CustomerDTO {
 

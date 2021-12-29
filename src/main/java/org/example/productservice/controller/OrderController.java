@@ -46,9 +46,9 @@ public class OrderController {
 
     // assign product to order
     @PutMapping("{orderId}/product/{productId}")
-    public OrderDTO assignProducttoOrder(@PathVariable(value="orderId") long orderId,
+    public OrderDTO assignProductToOrder(@PathVariable(value="orderId") long orderId,
                                                           @PathVariable(value="productId") long productId) throws ResolutionException{
-        return orderService.assignProducttoOrder(orderId, productId);
+        return orderService.assignProductToOrder(orderId, productId);
     }
 
     // delete order by id

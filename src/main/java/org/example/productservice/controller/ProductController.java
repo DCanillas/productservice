@@ -53,9 +53,9 @@ public class ProductController {
 
     // assign category to product
     @PutMapping("{productId}/category/{categoryId}")
-    public ProductDTO assignCategorytoProduct(@PathVariable(value="productId") long productId,
+    public ProductDTO assignCategoryToProduct(@PathVariable(value="productId") long productId,
                                                           @PathVariable(value="categoryId") long categoryId) throws ResolutionException{
-        return productService.assignCategorytoProduct(productId, categoryId);
+        return productService.assignCategoryToProduct(productId, categoryId);
     }
 
 }

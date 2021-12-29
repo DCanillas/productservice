@@ -1,5 +1,6 @@
 package org.example.productservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.Customer;
 import org.example.modelproject.Order;
 import org.example.modelproject.Product;
@@ -15,6 +16,7 @@ import java.lang.module.ResolutionException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
@@ -31,30 +33,41 @@ public class OrderServiceImpl implements OrderService {
     // get all orders
     @Override
     public List<OrderDTO> getAllOrders(){
-        return mapListOrderToDTO(orderRepository.findAll());
+        log.info("OrderServiceImpl - Method getAllOrders");
+        List<OrderDTO> ordersDTO = mapListOrderToDTO(orderRepository.findAll());
+        log.info("OrderServiceImpl - Return getAllOrders: "+ordersDTO);
+        return ordersDTO;
     }
 
     // create order
     @Override
     public OrderDTO createOrder(){
-        return mapOrderToDTO(orderRepository.save(new Order()));
+        log.info("OrderServiceImpl - Method createOrder");
+        Order orderCreated = orderRepository.save(new Order());
+        log.info("OrderServiceImpl - Created createOrder: "+orderCreated);
+        return mapOrderToDTO(orderCreated);
     }
 
     // get order by id
     @Override
     public OrderDTO getOrderById(long orderId) throws ResolutionException {
+        log.info("OrderServiceImpl - Method getOrderById: "+orderId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+        log.info("OrderServiceImpl - Found getOrderById: "+order);
         return mapOrderToDTO(order);
     }
 
     // assign customer to order
     @Override
     public OrderDTO updateOrder(long orderId, long customerId) throws ResolutionException{
+        log.info("OrderServiceImpl - Method updateOrder: "+orderId+"; "+customerId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+        log.info("OrderServiceImpl - Order Found updateOrder: "+order);
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+        log.info("OrderServiceImpl - Customer Found updateOrder: "+customer);
         order.setCustomer(customer);
         orderRepository.save(order);
         return mapOrderToDTO(order);
@@ -62,11 +75,14 @@ public class OrderServiceImpl implements OrderService {
 
     // assign product to order
     @Override
-    public OrderDTO assignProducttoOrder(long orderId, long productId) throws ResolutionException{
+    public OrderDTO assignProductToOrder(long orderId, long productId) throws ResolutionException{
+        log.info("OrderServiceImpl - Method assignProductToOrder: "+orderId+"; "+productId);
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+        log.info("OrderServiceImpl - Order Found assignProductToOrder: "+order);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResolutionException("product not found for this id :: " + productId));
+        log.info("OrderServiceImpl - Product Found assignProductToOrder: "+product);
         order.addProduct(product);
         return mapOrderToDTO(orderRepository.save(order));
     }
@@ -74,8 +90,10 @@ public class OrderServiceImpl implements OrderService {
     // delete order by id
     @Override
     public void deleteOrder(long orderId) throws ResolutionException{
-        orderRepository.findById(orderId)
+        log.info("OrderServiceImpl - Method deleteOrder");
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+        log.info("OrderServiceImpl - Found deleteOrder: "+order);
         orderRepository.deleteById(orderId);
     }
 

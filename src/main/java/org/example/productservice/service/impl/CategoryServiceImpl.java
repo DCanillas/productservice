@@ -1,5 +1,6 @@
 package org.example.productservice.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.Category;
 import org.example.productservice.dto.CategoryDTO;
 import org.example.productservice.repository.CategoryRepository;
@@ -11,6 +12,7 @@ import java.lang.module.ResolutionException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -23,29 +25,38 @@ public class CategoryServiceImpl implements CategoryService {
     // get all categories
     @Override
     public List<CategoryDTO> getAllCategories() {
+        log.info("CategoryServiceImpl - Method getAllCategories");
         List<CategoryDTO> categoriesDTO = mapListCategoryToDTO(categoryRepository.findAll());
+        log.info("CategoryServiceImpl - Return getAllCategories: "+categoriesDTO);
         return categoriesDTO;
     }
 
     // create category
     @Override
     public CategoryDTO createCategory(CategoryDTO category) {
-        return mapCategoryToDTO(categoryRepository.save(mapDTOToCategory(category)));
+        log.info("CategoryServiceImpl - Method createCategory: "+category);
+        Category categoryCreated = categoryRepository.save(mapDTOToCategory(category));
+        log.info("CategoryServiceImpl - Created createCategory: "+categoryCreated);
+        return mapCategoryToDTO(categoryCreated);
     }
 
     // get category by id
     @Override
     public CategoryDTO getCategoryById(long categoryId) throws ResolutionException {
+        log.info("CategoryServiceImpl - Method getCategoryById: "+categoryId);
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+        log.info("CategoryServiceImpl - Found getCategoryById: "+category);
         return mapCategoryToDTO(category);
     }
 
     // update category
     @Override
     public CategoryDTO updateCategory(long categoryId, CategoryDTO categoryDetails) throws ResolutionException {
+        log.info("CategoryServiceImpl - Method updateCategory: "+categoryId+"; "+categoryDetails);
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+        log.info("CategoryServiceImpl - Found updateCategory: "+category);
         category.setName(categoryDetails.getName());
         category.setDescription(categoryDetails.getDescription());
         categoryRepository.save(category);
@@ -55,8 +66,10 @@ public class CategoryServiceImpl implements CategoryService {
     // delete category by id
     @Override
     public void deleteCategory(long categoryId) throws ResolutionException {
-        categoryRepository.findById(categoryId)
+        log.info("CategoryServiceImpl - Method deleteCategory: "+categoryId);
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+        log.info("CategoryServiceImpl - Found deleteCategory: "+category);
         categoryRepository.deleteById(categoryId);
     }
 
