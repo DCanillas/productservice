@@ -1,0 +1,109 @@
+[
+    {
+        "id": 1,
+        "name": "Carcassonne",
+        "description": "Build up your city",
+        "price": 35.95
+	},
+    {
+        "id": 2,
+        "name": "Tsuro",
+        "description": "Choose the correct path",
+        "price": 25.95,
+        "categories": [
+            {
+                "id": 1,
+                "name": "Board Games",
+                "description": "Best tabletop games"
+            },
+            {
+                "id": 4,
+                "name": "Strategy Games",
+                "description": "Test your intellect"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Ticket to ride!",
+        "description": "First arriving wins",
+        "price": 45.95,
+        "categories": [
+            {
+                "id": 1,
+                "name": "Board Games",
+                "description": "Best tabletop games"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "DC Deck Building Game",
+        "description": "Who is the strongest superhero?",
+        "price": 15.95,
+        "categories": [
+            {
+                "id": 2,
+                "name": "Card Games",
+                "description": "Build up your deck and defeate your rival"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Dungeons and Dragons",
+        "description": "Gather your allies and defeat the dark lord",
+        "price": 45.99,
+        "categories": [
+            {
+                "id": 3,
+                "name": "Role Games",
+                "description": "Who will you be this time?"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Descent",
+        "description": "Will you survive?",
+        "price": 75.95,
+        "categories": [
+            {
+                "id": 1,
+                "name": "Board Games",
+                "description": "Best tabletop games"
+            },
+            {
+                "id": 3,
+                "name": "Role Games",
+                "description": "Who will you be this time?"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Takenono",
+        "description": "Take care of your field",
+        "price": 35.95,
+        "categories": [
+            {
+                "id": 1,
+                "name": "Board Games",
+                "description": "Best tabletop games"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Potion Explosion",
+        "description": "Potion lessons in magic academy",
+        "price": 39.95,
+        "categories": [
+            {
+                "id": 13,
+                "name": "Family Games",
+                "description": "Best to play in family"
+            }
+        ]
+    }
+]

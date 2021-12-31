@@ -92,6 +92,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     static Customer mapDTOToCustomer (CustomerDTO customerDTO){
         Customer customer = new Customer();
+        customer.setId(customerDTO.getId());
         customer.setName(customerDTO.getName());
         customer.setEmail(customerDTO.getEmail());
         return customer;

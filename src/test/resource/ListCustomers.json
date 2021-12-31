@@ -1,0 +1,219 @@
+[
+    {
+        "id": 1,
+        "name": "Batman",
+        "email": "batman@epam.com",
+        "orders": [
+            {
+                "id": 1,
+                "products": [
+                    {
+                        "id": 1,
+                        "name": "Carcassonne",
+                        "description": "Build up your city",
+                        "price": 35.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 4,
+                                "name": "Strategy Games",
+                                "description": "Test your intellect"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "name": "Tsuro",
+                        "description": "Choose the correct path",
+                        "price": 25.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 4,
+                                "name": "Strategy Games",
+                                "description": "Test your intellect"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "products": [
+                    {
+                        "id": 1,
+                        "name": "Carcassonne",
+                        "description": "Build up your city",
+                        "price": 35.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 4,
+                                "name": "Strategy Games",
+                                "description": "Test your intellect"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Superman",
+        "email": "superman@epam.com",
+        "orders": [
+            {
+                "id": 4,
+                "products": [
+                    {
+                        "id": 5,
+                        "name": "Dungeons and Dragons",
+                        "description": "Gather your allies and defeat the dark lord",
+                        "price": 45.99,
+                        "categories": [
+                            {
+                                "id": 3,
+                                "name": "Role Games",
+                                "description": "Who will you be this time?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Wonder Woman",
+        "email": "wonderwoman@epam.com",
+        "orders": [
+            {
+                "id": 2,
+                "products": [
+                    {
+                        "id": 6,
+                        "name": "Descent",
+                        "description": "Will you survive?",
+                        "price": 75.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 3,
+                                "name": "Role Games",
+                                "description": "Who will you be this time?"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "products": [
+                    {
+                        "id": 4,
+                        "name": "DC Deck Building Game",
+                        "description": "Who is the strongest superhero?",
+                        "price": 15.95,
+                        "categories": [
+                            {
+                                "id": 2,
+                                "name": "Card Games",
+                                "description": "Build up your deck and defeate your rival"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Green Lantern",
+        "email": "gl@epam.com",
+        "orders": [
+            {
+                "id": 6,
+                "products": [
+                    {
+                        "id": 2,
+                        "name": "Tsuro",
+                        "description": "Choose the correct path",
+                        "price": 25.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 4,
+                                "name": "Strategy Games",
+                                "description": "Test your intellect"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Ticket to ride!",
+                        "description": "First arriving wins",
+                        "price": 45.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Black Canary",
+        "email": "blackCanary@epam.com",
+        "orders": [
+            {
+                "id": 8,
+                "products": [
+                    {
+                        "id": 2,
+                        "name": "Tsuro",
+                        "description": "Choose the correct path",
+                        "price": 25.95,
+                        "categories": [
+                            {
+                                "id": 1,
+                                "name": "Board Games",
+                                "description": "Best tabletop games"
+                            },
+                            {
+                                "id": 4,
+                                "name": "Strategy Games",
+                                "description": "Test your intellect"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

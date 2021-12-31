@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "Board Games",
+        "description": "Best tabletop games"
+    },
+    {
+        "id": 2,
+        "name": "Card Games",
+        "description": "Build up your deck and defeat your rival"
+    },
+    {
+        "id": 3,
+        "name": "Role Games",
+        "description": "Who will you be this time?"
+    },
+    {
+        "id": 4,
+        "name": "Strategy Games",
+        "description": "Test your intellect"
+    },
+    {
+        "id": 13,
+        "name": "Family Games",
+        "description": "Best to play in family"
+    }
+]
