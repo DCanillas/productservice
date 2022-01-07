@@ -3,6 +3,7 @@ package org.example.productservice.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.dto.CustomerDTO;
+import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +43,20 @@ public class CustomerServiceImpl implements CustomerService {
 
     // get customer by id
     @Override
-    public CustomerDTO getCustomerById(long customerId) throws ResolutionException {
+    public CustomerDTO getCustomerById(long customerId) {
         log.info("CustomerServiceImpl - Method getCustomerById");
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("CustomerServiceImpl - Found getCustomerById: "+customer);
         return mapCustomerToDTO(customer);
     }
 
     // update customer
     @Override
-    public CustomerDTO updateCustomer(long customerId, CustomerDTO customerDetails) throws ResolutionException{
+    public CustomerDTO updateCustomer(long customerId, CustomerDTO customerDetails) {
         log.info("CustomerServiceImpl - Method updateCustomer");
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("CustomerServiceImpl - Found updateCustomer: "+customer);
         customer.setName(customerDetails.getName());
         customer.setEmail(customerDetails.getEmail());
@@ -65,10 +66,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     // delete customer by id
     @Override
-    public void deleteCustomer(long customerId) throws ResolutionException{
+    public void deleteCustomer(long customerId) {
         log.info("CustomerServiceImpl - Method deleteCustomer");
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("CustomerServiceImpl - Found deleteCustomer: "+customer);
         customerRepository.deleteById(customerId);
     }

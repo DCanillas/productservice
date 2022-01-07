@@ -78,7 +78,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void testGetCategoryById() throws Exception{
+    public void testGetCategoryById() throws Exception {
         log.info("Test - testGetCategoryById");
         Mockito.when(categoryService.getCategoryById(anyLong())).thenReturn(category);
 

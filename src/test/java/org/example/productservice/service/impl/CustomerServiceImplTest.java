@@ -104,6 +104,6 @@ public class CustomerServiceImplTest {
 
         customerService.deleteCustomer(1);
 
-        Mockito.verify(customerRepository, times(1)).deleteById(Long.valueOf(1));
+        Mockito.verify(customerRepository, times(1)).deleteById(1L);
     }
 }

@@ -127,7 +127,7 @@ public class OrderServiceImplTest {
 
         orderService.deleteOrder(1);
 
-        Mockito.verify(orderRepository, times(1)).deleteById(Long.valueOf(1));
+        Mockito.verify(orderRepository, times(1)).deleteById(1L);
     }
 
     @Test

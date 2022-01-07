@@ -105,7 +105,7 @@ public class CategoryServiceImplTest {
 
         categoryService.deleteCategory(1);
 
-        Mockito.verify(categoryRepository, times(1)).deleteById(Long.valueOf(1));
+        Mockito.verify(categoryRepository, times(1)).deleteById(1L);
     }
 
 }

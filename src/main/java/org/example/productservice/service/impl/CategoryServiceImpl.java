@@ -3,6 +3,7 @@ package org.example.productservice.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.model.Category;
 import org.example.modelproject.dto.CategoryDTO;
+import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CategoryRepository;
 import org.example.productservice.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +43,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     // get category by id
     @Override
-    public CategoryDTO getCategoryById(long categoryId) throws ResolutionException {
+    public CategoryDTO getCategoryById(long categoryId) {
         log.info("CategoryServiceImpl - Method getCategoryById: "+categoryId);
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("CategoryServiceImpl - Found getCategoryById: "+category);
         return mapCategoryToDTO(category);
     }
 
     // update category
     @Override
-    public CategoryDTO updateCategory(long categoryId, CategoryDTO categoryDetails) throws ResolutionException {
+    public CategoryDTO updateCategory(long categoryId, CategoryDTO categoryDetails) {
         log.info("CategoryServiceImpl - Method updateCategory: "+categoryId+"; "+categoryDetails);
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("CategoryServiceImpl - Found updateCategory: "+category);
         category.setName(categoryDetails.getName());
         category.setDescription(categoryDetails.getDescription());
@@ -65,10 +66,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     // delete category by id
     @Override
-    public void deleteCategory(long categoryId) throws ResolutionException {
+    public void deleteCategory(long categoryId) {
         log.info("CategoryServiceImpl - Method deleteCategory: "+categoryId);
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("CategoryServiceImpl - Found deleteCategory: "+category);
         categoryRepository.deleteById(categoryId);
     }

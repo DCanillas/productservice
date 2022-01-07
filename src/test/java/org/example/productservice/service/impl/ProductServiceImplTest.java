@@ -116,7 +116,7 @@ public class ProductServiceImplTest {
 
         productService.deleteProduct(1);
 
-        Mockito.verify(productRepository, times(1)).deleteById(Long.valueOf(1));
+        Mockito.verify(productRepository, times(1)).deleteById(1L);
     }
 
     @Test

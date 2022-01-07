@@ -26,7 +26,7 @@ public class ProductDTOTest {
         product.setId(1);
         product.setName("Sagrada");
         product.setDescription("Build your own church");
-        product.setPrice(Double.valueOf(35.95));
+        product.setPrice(35.95);
         log.info("Product: "+product.toString());
         assertThat(product.hashCode()).isNotEqualTo(new ProductDTO().hashCode());
 

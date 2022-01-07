@@ -5,6 +5,7 @@ import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
 import org.example.modelproject.model.Product;
 import org.example.modelproject.dto.OrderDTO;
+import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.repository.OrderRepository;
 import org.example.productservice.repository.ProductRepository;
@@ -50,23 +51,23 @@ public class OrderServiceImpl implements OrderService {
 
     // get order by id
     @Override
-    public OrderDTO getOrderById(long orderId) throws ResolutionException {
+    public OrderDTO getOrderById(long orderId) {
         log.info("OrderServiceImpl - Method getOrderById: "+orderId);
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Found getOrderById: "+order);
         return mapOrderToDTO(order);
     }
 
     // assign customer to order
     @Override
-    public OrderDTO updateOrder(long orderId, long customerId) throws ResolutionException{
+    public OrderDTO updateOrder(long orderId, long customerId) {
         log.info("OrderServiceImpl - Method updateOrder: "+orderId+"; "+customerId);
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Order Found updateOrder: "+order);
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResolutionException("Customer not found for this id :: " + customerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("OrderServiceImpl - Customer Found updateOrder: "+customer);
         order.setCustomer(customer);
         orderRepository.save(order);
@@ -75,13 +76,13 @@ public class OrderServiceImpl implements OrderService {
 
     // assign product to order
     @Override
-    public OrderDTO assignProductToOrder(long orderId, long productId) throws ResolutionException{
+    public OrderDTO assignProductToOrder(long orderId, long productId) {
         log.info("OrderServiceImpl - Method assignProductToOrder: "+orderId+"; "+productId);
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Order Found assignProductToOrder: "+order);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("product not found for this id :: " + productId));
         log.info("OrderServiceImpl - Product Found assignProductToOrder: "+product);
         order.addProduct(product);
         return mapOrderToDTO(orderRepository.save(order));
@@ -89,10 +90,10 @@ public class OrderServiceImpl implements OrderService {
 
     // delete order by id
     @Override
-    public void deleteOrder(long orderId) throws ResolutionException{
+    public void deleteOrder(long orderId) {
         log.info("OrderServiceImpl - Method deleteOrder");
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResolutionException("Order not found for this id :: " + orderId));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Found deleteOrder: "+order);
         orderRepository.deleteById(orderId);
     }

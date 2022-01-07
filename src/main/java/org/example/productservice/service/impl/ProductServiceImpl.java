@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.model.Category;
 import org.example.modelproject.model.Product;
 import org.example.modelproject.dto.ProductDTO;
+import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CategoryRepository;
 import org.example.productservice.repository.ProductRepository;
 import org.example.productservice.service.ProductService;
@@ -46,20 +47,20 @@ public class ProductServiceImpl implements ProductService {
 
     // get product by id
     @Override
-    public ProductDTO getProductById(long productId) throws ResolutionException {
+    public ProductDTO getProductById(long productId) {
         log.info("ProductServiceImpl - Method getProductById: "+productId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("Product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found getProductById: "+product);
         return mapProductToDTO(product);
     }
 
     // update product
     @Override
-    public ProductDTO updateProduct(long productId, ProductDTO productDetails) throws ResolutionException{
+    public ProductDTO updateProduct(long productId, ProductDTO productDetails) {
         log.info("ProductServiceImpl - Method updateProduct: "+productId+"; "+productDetails);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("Product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found updateProduct: "+product);
         product.setName(productDetails.getName());
         product.setDescription(productDetails.getDescription());
@@ -70,23 +71,23 @@ public class ProductServiceImpl implements ProductService {
 
     // delete product by id
     @Override
-    public void deleteProduct(long productId) throws ResolutionException{
+    public void deleteProduct(long productId) {
         log.info("ProductServiceImpl - Method deleteProduct: "+productId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("Product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found deleteProduct: "+product);
         productRepository.deleteById(productId);
     }
 
     // assign category to product
     @Override
-    public ProductDTO assignCategoryToProduct(long productId, long categoryId) throws ResolutionException{
+    public ProductDTO assignCategoryToProduct(long productId, long categoryId) {
         log.info("ProductServiceImpl - Method assignCategoryToProduct: "+productId+"; "+categoryId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResolutionException("product not found for this id :: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found assignCategoryToProduct: "+product);
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResolutionException("Category not found for this id :: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("ProductServiceImpl - Category assignCategoryToProduct: "+category);
         product.addCategory(category);
         return mapProductToDTO(productRepository.save(product));
