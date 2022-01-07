@@ -1,9 +1,10 @@
 package org.example.productservice.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.CustomerDTO;
+import org.example.modelproject.dto.CustomerDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomerIntegrationTest {
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -68,7 +73,7 @@ public class CustomerIntegrationTest {
     @Test
     public void getCustomerByIdTest(){
         log.info("Test - getCustomerByIdTest");
-        String url = "http://localhost:"+port+"/api/v1/customer/6";
+        String url = "http://localhost:"+port+"/api/v1/customer/1";
 
         HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
         ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
@@ -81,7 +86,7 @@ public class CustomerIntegrationTest {
     @Test
     public void updateCustomerTest(){
         log.info("Test - updateCustomerTest");
-        String url = "http://localhost:"+port+"/api/v1/customer/8";
+        String url = "http://localhost:"+port+"/api/v1/customer/1";
 
         HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
         ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
@@ -92,9 +97,22 @@ public class CustomerIntegrationTest {
     }
 
     @Test
-    public void deleteCustomerTest(){
+    public void deleteCustomerTest() throws JsonProcessingException {
         log.info("Test - deleteCustomerTest");
-        String url = "http://localhost:"+port+"/api/v1/customer/8";
+
+        String urlGet = "http://localhost:"+port+"/api/v1/customer";
+
+        HttpEntity<List<CustomerDTO>> requestEntityGet = new HttpEntity<>(null,null);
+        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, String.class);
+
+        CustomerDTO[] customers = objectMapper.readValue(responseGet.getBody(),
+                CustomerDTO[].class);
+        List<CustomerDTO> customerList = Arrays.asList(customers);
+
+        Long customerListMaxId = customerList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
+
+        String url = "http://localhost:"+port+"/api/v1/customer/"+customerListMaxId;
         HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
 
         ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,

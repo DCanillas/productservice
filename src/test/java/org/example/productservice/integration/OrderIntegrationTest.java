@@ -1,9 +1,10 @@
 package org.example.productservice.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.OrderDTO;
+import org.example.modelproject.dto.OrderDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderIntegrationTest {
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -81,7 +86,7 @@ public class OrderIntegrationTest {
     @Test
     public void updateOrderTest(){
         log.info("Test - updateOrderTest");
-        String url = "http://localhost:"+port+"/api/v1/order/9/customer/1";
+        String url = "http://localhost:"+port+"/api/v1/order/1/customer/1";
 
         HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(null,null);
         ResponseEntity<OrderDTO> response = testRestTemplate.exchange(url,
@@ -94,7 +99,15 @@ public class OrderIntegrationTest {
     @Test
     public void assignProductToOrderTest(){
         log.info("Test - assignProductToOrderTest");
-        String url = "http://localhost:"+port+"/api/v1/order/1/product/3";
+
+        String urlCreate = "http://localhost:"+port+"/api/v1/order";
+
+        HttpEntity<OrderDTO> requestEntityCreate = new HttpEntity<>(null,null);
+        ResponseEntity<OrderDTO> responseCreate = testRestTemplate.exchange(urlCreate,
+                HttpMethod.POST, requestEntityCreate, OrderDTO.class);
+        log.info("Response: "+responseCreate.getBody());
+
+        String url = "http://localhost:"+port+"/api/v1/order/"+responseCreate.getBody().getId()+"/product/3";
 
         HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(null,null);
         ResponseEntity<OrderDTO> response = testRestTemplate.exchange(url,
@@ -105,9 +118,22 @@ public class OrderIntegrationTest {
     }
 
     @Test
-    public void deleteOrderTest(){
+    public void deleteOrderTest() throws JsonProcessingException {
         log.info("Test - deleteOrderTest");
-        String url = "http://localhost:"+port+"/api/v1/order/11";
+
+        String urlGet = "http://localhost:"+port+"/api/v1/order";
+
+        HttpEntity<List<OrderDTO>> requestEntityGet = new HttpEntity<>(null,null);
+        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, String.class);
+
+        OrderDTO[] orders = objectMapper.readValue(responseGet.getBody(),
+                OrderDTO[].class);
+        List<OrderDTO> orderList = Arrays.asList(orders);
+
+        Long orderListMaxId = orderList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
+
+        String url = "http://localhost:"+port+"/api/v1/order/"+orderListMaxId;
         HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(order,null);
 
         ResponseEntity<OrderDTO> response = testRestTemplate.exchange(url,

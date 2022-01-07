@@ -1,6 +1,6 @@
 package org.example.productservice.controller;
 
-import org.example.productservice.dto.ProductDTO;
+import org.example.modelproject.dto.ProductDTO;
 import org.example.productservice.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,9 @@
 package org.example.productservice.dto;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.CategoryDTO;
+import org.example.modelproject.dto.CustomerDTO;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@SpringBootTest
+@SpringBootTest(classes = CustomerDTO.class)
 public class CustomerDTOTest {
 
     @Test
@@ -38,7 +39,6 @@ public class CustomerDTOTest {
         customer2.setEmail(customer.getEmail());
         customer2.setOrders(customer.getOrders());
         assertTrue(customer.equals(customer2));
-        assertTrue(customer.canEqual(customer2));
     }
 
 }

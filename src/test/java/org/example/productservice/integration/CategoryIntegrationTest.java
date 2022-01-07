@@ -1,9 +1,10 @@
 package org.example.productservice.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.CategoryDTO;
+import org.example.modelproject.dto.CategoryDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CategoryIntegrationTest {
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -92,9 +97,22 @@ public class CategoryIntegrationTest {
     }
 
     @Test
-    public void deleteCategoryTest(){
+    public void deleteCategoryTest() throws JsonProcessingException {
         log.info("Test - deleteCategoryTest");
-        String url = "http://localhost:"+port+"/api/v1/category/15";
+
+        String urlGet = "http://localhost:"+port+"/api/v1/category";
+
+        HttpEntity<List<CategoryDTO>> requestEntityGet = new HttpEntity<>(null,null);
+        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, String.class);
+
+        CategoryDTO[] categories = objectMapper.readValue(responseGet.getBody(),
+                CategoryDTO[].class);
+        List<CategoryDTO> categoryList = Arrays.asList(categories);
+
+        Long categoryListMaxId = categoryList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
+
+        String url = "http://localhost:"+port+"/api/v1/category/"+categoryListMaxId;
         HttpEntity<CategoryDTO> requestEntity = new HttpEntity<>(category,null);
 
         ResponseEntity<CategoryDTO> response = testRestTemplate.exchange(url,

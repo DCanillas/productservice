@@ -1,8 +1,8 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.Customer;
-import org.example.productservice.dto.CustomerDTO;
+import org.example.modelproject.model.Customer;
+import org.example.modelproject.dto.CustomerDTO;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;

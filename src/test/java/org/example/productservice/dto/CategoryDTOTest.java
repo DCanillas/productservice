@@ -1,15 +1,15 @@
 package org.example.productservice.dto;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.CategoryDTO;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@SpringBootTest
+@SpringBootTest(classes = CategoryDTO.class)
 public class CategoryDTOTest {
     @Test
     public void testConstructor(){
@@ -33,7 +33,6 @@ public class CategoryDTOTest {
         category2.setName(category.getName());
         category2.setDescription(category.getDescription());
         assertTrue(category.equals(category2));
-        assertTrue(category.canEqual(category2));
     }
 
 }

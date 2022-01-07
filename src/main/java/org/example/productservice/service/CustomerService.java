@@ -1,7 +1,6 @@
 package org.example.productservice.service;
 
-import org.example.modelproject.Customer;
-import org.example.productservice.dto.CustomerDTO;
+import org.example.modelproject.dto.CustomerDTO;
 
 import java.util.List;
 

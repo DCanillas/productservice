@@ -1,7 +1,6 @@
 package org.example.productservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.CategoryDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

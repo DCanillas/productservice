@@ -1,9 +1,9 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.Category;
-import org.example.modelproject.Product;
-import org.example.productservice.dto.ProductDTO;
+import org.example.modelproject.model.Category;
+import org.example.modelproject.model.Product;
+import org.example.modelproject.dto.ProductDTO;
 import org.example.productservice.repository.CategoryRepository;
 import org.example.productservice.repository.ProductRepository;
 import org.example.productservice.service.ProductService;

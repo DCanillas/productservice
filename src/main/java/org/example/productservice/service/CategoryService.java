@@ -1,6 +1,6 @@
 package org.example.productservice.service;
 
-import org.example.productservice.dto.CategoryDTO;
+import org.example.modelproject.dto.CategoryDTO;
 
 import java.util.List;
 

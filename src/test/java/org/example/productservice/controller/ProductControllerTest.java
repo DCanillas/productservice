@@ -3,7 +3,7 @@ package org.example.productservice.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.ProductDTO;
+import org.example.modelproject.dto.ProductDTO;
 import org.example.productservice.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

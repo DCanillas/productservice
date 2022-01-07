@@ -1,8 +1,8 @@
 package org.example.productservice.dto;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.OrderDTO;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@SpringBootTest
+@SpringBootTest(classes = OrderDTO.class)
 public class OrderDTOTest {
 
     @Test
@@ -28,7 +28,7 @@ public class OrderDTOTest {
         order.setId(1);
         order.setCustomerId(1);
         order.setProducts(new ArrayList<>());
-        log.info("Order: "+order.toString());
+        log.info("Order: "+order);
         assertThat(order.hashCode()).isNotEqualTo(new OrderDTO().hashCode());
 
         OrderDTO order2 = new OrderDTO();
@@ -36,7 +36,6 @@ public class OrderDTOTest {
         order2.setCustomerId(order.getCustomerId());
         order2.setProducts(order.getProducts());
         assertTrue(order.equals(order2));
-        assertTrue(order.canEqual(order2));
     }
 
 }

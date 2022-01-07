@@ -1,9 +1,10 @@
 package org.example.productservice.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.productservice.dto.ProductDTO;
+import org.example.modelproject.dto.ProductDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProductionIntegrationTest {
     @LocalServerPort
     private int port;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -49,6 +54,7 @@ public class ProductionIntegrationTest {
                 HttpMethod.GET, requestEntity, List.class);
 
         log.info("Response: "+response.getBody());
+
         assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
     }
 
@@ -81,7 +87,7 @@ public class ProductionIntegrationTest {
     @Test
     public void updateProductTest(){
         log.info("Test - updateProductTest");
-        String url = "http://localhost:"+port+"/api/v1/product/10";
+        String url = "http://localhost:"+port+"/api/v1/product/1";
 
         HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
         ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
@@ -92,9 +98,22 @@ public class ProductionIntegrationTest {
     }
 
     @Test
-    public void deleteProductTest(){
+    public void deleteProductTest() throws JsonProcessingException {
         log.info("Test - deleteProductTest");
-        String url = "http://localhost:"+port+"/api/v1/product/10";
+
+        String urlGet = "http://localhost:"+port+"/api/v1/product";
+
+        HttpEntity<List<ProductDTO>> requestEntityGet = new HttpEntity<>(null,null);
+        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, String.class);
+
+        ProductDTO[] products = objectMapper.readValue(responseGet.getBody(),
+                ProductDTO[].class);
+        List<ProductDTO> productsList = Arrays.asList(products);
+
+        Long productsListMaxId = productsList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
+
+        String url = "http://localhost:"+port+"/api/v1/product/"+productsListMaxId;
         HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
 
         ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
