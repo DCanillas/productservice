@@ -16,6 +16,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Slf4j
 @ActiveProfiles("test")
 @SpringBootTest
@@ -60,5 +62,12 @@ public class ServiceInDBTest {
 
         List<Product> productsFound = productRepository.findAll();
         productsFound.forEach(productFor -> log.info("Product: "+productFor));
+
+        Long productId = productSaved.getId();
+        log.info("Product n "+productId+": "+productRepository.findById(productId));
+        assertThat(productSaved).isNotNull();
+
+        productRepository.deleteById(productSaved.getId());
+
     }
 }
