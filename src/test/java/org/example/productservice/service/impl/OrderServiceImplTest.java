@@ -3,6 +3,7 @@ package org.example.productservice.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.CustomerDTO;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
 import org.example.modelproject.model.Product;
@@ -15,12 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -83,7 +86,9 @@ public class OrderServiceImplTest {
         Mockito.when(orderRepository.findAll()).thenReturn(listOrders);
 
         List<OrderDTO> actualListOrdersDTO = orderService.getAllOrders();
-        List<OrderDTO> expectedListOrdersDTO = OrderServiceImpl.mapListOrderToDTO(listOrders);
+        List<OrderDTO> expectedListOrdersDTO = listOrders.stream()
+                .map(order -> new ModelMapper().map(order, OrderDTO.class))
+                .collect(Collectors.toList());
         assertTrue(actualListOrdersDTO.equals(expectedListOrdersDTO));
     }
 
@@ -93,7 +98,7 @@ public class OrderServiceImplTest {
         Mockito.when(orderRepository.save(new Order())).thenReturn(order);
 
         OrderDTO actualOrderDTO = orderService.createOrder();
-        OrderDTO expectedOrderDTO = OrderServiceImpl.mapOrderToDTO(order);
+        OrderDTO expectedOrderDTO = new ModelMapper().map(order, OrderDTO.class);
         assertTrue(actualOrderDTO.equals(expectedOrderDTO));
     }
 
@@ -103,7 +108,7 @@ public class OrderServiceImplTest {
         Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
 
         OrderDTO actualOrderDTO = orderService.getOrderById(1);
-        OrderDTO expectedOrderDTO = OrderServiceImpl.mapOrderToDTO(order);
+        OrderDTO expectedOrderDTO = new ModelMapper().map(order, OrderDTO.class);
         assertTrue(actualOrderDTO.equals(expectedOrderDTO));
     }
 
@@ -115,7 +120,7 @@ public class OrderServiceImplTest {
         Mockito.when(orderRepository.save(order)).thenReturn(order);
 
         OrderDTO actualOrderDTO = orderService.updateOrder(1, 1);
-        OrderDTO expectedOrderDTO = OrderServiceImpl.mapOrderToDTO(order);
+        OrderDTO expectedOrderDTO = new ModelMapper().map(order, OrderDTO.class);
         assertTrue(actualOrderDTO.equals(expectedOrderDTO));
     }
 
@@ -138,7 +143,7 @@ public class OrderServiceImplTest {
         Mockito.when(orderRepository.save(order)).thenReturn(order);
 
         OrderDTO actualOrderDTO = orderService.assignProductToOrder(1, 1);
-        OrderDTO expectedOrderDTO = OrderServiceImpl.mapOrderToDTO(order);
+        OrderDTO expectedOrderDTO = new ModelMapper().map(order, OrderDTO.class);
         assertTrue(actualOrderDTO.equals(expectedOrderDTO));
     }
 }

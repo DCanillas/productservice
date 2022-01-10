@@ -3,6 +3,7 @@ package org.example.productservice.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.OrderDTO;
 import org.example.modelproject.model.Category;
 import org.example.modelproject.model.Product;
 import org.example.modelproject.dto.ProductDTO;
@@ -13,12 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -72,7 +75,9 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.findAll()).thenReturn(listProducts);
 
         List<ProductDTO> actualListProductsDTO = productService.getAllProducts();
-        List<ProductDTO> expectedListProductsDTO = ProductServiceImpl.mapListProductToDTO(listProducts);
+        List<ProductDTO> expectedListProductsDTO = listProducts.stream()
+                .map(product -> new ModelMapper().map(product, ProductDTO.class))
+                .collect(Collectors.toList());
         assertTrue(actualListProductsDTO.equals(expectedListProductsDTO));
     }
 
@@ -83,7 +88,8 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
         ProductDTO actualProductDTO = productService.createProduct(productDTO);
-        ProductDTO expectedProductDTO = ProductServiceImpl.mapProductToDTO(product);
+        ProductDTO expectedProductDTO =
+                new ModelMapper().map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -93,7 +99,8 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
 
         ProductDTO actualProductDTO = productService.getProductById(1);
-        ProductDTO expectedProductDTO = ProductServiceImpl.mapProductToDTO(product);
+        ProductDTO expectedProductDTO =
+                new ModelMapper().map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -104,7 +111,8 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
         ProductDTO actualProductDTO = productService.updateProduct(1, productDTO);
-        ProductDTO expectedProductDTO = ProductServiceImpl.mapProductToDTO(product);
+        ProductDTO expectedProductDTO =
+                new ModelMapper().map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -127,7 +135,8 @@ public class ProductServiceImplTest {
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
         ProductDTO actualProductDTO = productService.assignCategoryToProduct(1, 1);
-        ProductDTO expectedProductDTO = ProductServiceImpl.mapProductToDTO(product);
+        ProductDTO expectedProductDTO =
+                new ModelMapper().map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 }

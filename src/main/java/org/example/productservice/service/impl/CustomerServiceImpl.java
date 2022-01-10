@@ -1,17 +1,17 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.model.Customer;
 import org.example.modelproject.dto.CustomerDTO;
+import org.example.modelproject.model.Customer;
 import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.service.CustomerService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,7 +27,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDTO> getAllCustomers(){
         log.info("CustomerServiceImpl - Method getAllCustomers");
-        List<CustomerDTO> customersDTO = mapListCustomerToDTO(customerRepository.findAll());
+        List<CustomerDTO> customersDTO = customerRepository.findAll().stream()
+                .map(customer -> new ModelMapper().map(customer, CustomerDTO.class))
+                .collect(Collectors.toList());
         log.info("CustomerServiceImpl - Return getAllCustomers: "+customersDTO);
         return customersDTO;
     }
@@ -36,9 +38,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO createCustomer(CustomerDTO customer){
         log.info("CustomerServiceImpl - Method createCustomer");
-        Customer customerCreated = customerRepository.save(mapDTOToCustomer(customer));
+        Customer customerCreated = customerRepository.save(new ModelMapper().map(customer, Customer.class));
         log.info("CustomerServiceImpl - Created createCustomer: "+customerCreated);
-        return mapCustomerToDTO(customerCreated);
+        return new ModelMapper().map(customer, CustomerDTO.class);
     }
 
     // get customer by id
@@ -48,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("CustomerServiceImpl - Found getCustomerById: "+customer);
-        return mapCustomerToDTO(customer);
+        return new ModelMapper().map(customer, CustomerDTO.class);
     }
 
     // update customer
@@ -61,7 +63,8 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setName(customerDetails.getName());
         customer.setEmail(customerDetails.getEmail());
         customerRepository.save(customer);
-        return mapCustomerToDTO(customer);
+        return new ModelMapper().map(customer, CustomerDTO.class);
+
     }
 
     // delete customer by id
@@ -74,28 +77,4 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(customerId);
     }
 
-    static CustomerDTO mapCustomerToDTO (Customer customer){
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(customer.getId());
-        customerDTO.setName(customer.getName());
-        customerDTO.setEmail(customer.getEmail());
-        customerDTO.setOrders(OrderServiceImpl.mapListOrderToDTO(customer.getOrders()));
-        return customerDTO;
-    }
-
-    static List<CustomerDTO> mapListCustomerToDTO (List<Customer> customers){
-        List<CustomerDTO> customersDTO = new ArrayList<>();
-        for (Customer customer : customers) {
-            customersDTO.add(mapCustomerToDTO(customer));
-        }
-        return customersDTO;
-    }
-
-    static Customer mapDTOToCustomer (CustomerDTO customerDTO){
-        Customer customer = new Customer();
-        customer.setId(customerDTO.getId());
-        customer.setName(customerDTO.getName());
-        customer.setEmail(customerDTO.getEmail());
-        return customer;
-    }
 }

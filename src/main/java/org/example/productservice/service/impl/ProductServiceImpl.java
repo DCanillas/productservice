@@ -1,19 +1,19 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.ProductDTO;
 import org.example.modelproject.model.Category;
 import org.example.modelproject.model.Product;
-import org.example.modelproject.dto.ProductDTO;
 import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CategoryRepository;
 import org.example.productservice.repository.ProductRepository;
 import org.example.productservice.service.ProductService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,7 +31,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getAllProducts(){
         log.info("ProductServiceImpl - Method getAllProducts");
-        List<ProductDTO> productsDTO = mapListProductToDTO(productRepository.findAll());
+        List<ProductDTO> productsDTO = productRepository.findAll().stream()
+                .map(product -> new ModelMapper().map(product, ProductDTO.class))
+                .collect(Collectors.toList());
         log.info("ProductServiceImpl - Return getAllProducts: "+productsDTO);
         return productsDTO;
     }
@@ -40,9 +42,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO createProduct(ProductDTO product){
         log.info("ProductServiceImpl - Method createProduct: "+product);
-        Product productCreated = productRepository.save(mapDTOToProduct(product));
+        Product productCreated = productRepository
+                .save(new ModelMapper().map(product, Product.class));
         log.info("ProductServiceImpl - Created createProduct: "+productCreated);
-        return mapProductToDTO(productCreated);
+        return new ModelMapper().map(productCreated, ProductDTO.class);
     }
 
     // get product by id
@@ -52,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found getProductById: "+product);
-        return mapProductToDTO(product);
+        return new ModelMapper().map(product, ProductDTO.class);
     }
 
     // update product
@@ -66,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDetails.getDescription());
         product.setPrice(productDetails.getPrice());
         productRepository.save(product);
-        return mapProductToDTO(product);
+        return new ModelMapper().map(product, ProductDTO.class);
     }
 
     // delete product by id
@@ -90,33 +93,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("ProductServiceImpl - Category assignCategoryToProduct: "+category);
         product.addCategory(category);
-        return mapProductToDTO(productRepository.save(product));
+        return new ModelMapper().map(productRepository.save(product), ProductDTO.class);
     }
 
-    static ProductDTO mapProductToDTO (Product product){
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(product.getId());
-        productDTO.setName(product.getName());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setCategories(CategoryServiceImpl.mapListCategoryToDTO(product.getCategories()));
-        return productDTO;
-    }
-
-    static List<ProductDTO> mapListProductToDTO (List<Product> products){
-        List<ProductDTO> productsDTO = new ArrayList<>();
-        for (Product product : products) {
-            productsDTO.add(mapProductToDTO(product));
-        }
-        return productsDTO;
-    }
-
-    static Product mapDTOToProduct (ProductDTO productDTO){
-        Product product = new Product();
-        product.setId(productDTO.getId());
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        return product;
-    }
 }

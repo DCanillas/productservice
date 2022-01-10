@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -62,7 +64,9 @@ public class CategoryServiceImplTest {
         Mockito.when(categoryRepository.findAll()).thenReturn(listCategories);
 
         List<CategoryDTO> actualListCategoriesDTO = categoryService.getAllCategories();
-        List<CategoryDTO> expectedListCategoriesDTO = CategoryServiceImpl.mapListCategoryToDTO(listCategories);
+        List<CategoryDTO> expectedListCategoriesDTO = listCategories.stream()
+                .map(category -> new ModelMapper().map(category, CategoryDTO.class))
+                .collect(Collectors.toList());
         assertTrue(actualListCategoriesDTO.equals(expectedListCategoriesDTO));
     }
 
@@ -72,7 +76,7 @@ public class CategoryServiceImplTest {
         Mockito.when(categoryRepository.save(category)).thenReturn(category);
 
         CategoryDTO actualCategoryDTO = categoryService.createCategory(categoryDTO);
-        CategoryDTO expectedCategoryDTO = CategoryServiceImpl.mapCategoryToDTO(category);
+        CategoryDTO expectedCategoryDTO = new ModelMapper().map(category, CategoryDTO.class);
         assertTrue(actualCategoryDTO.equals(expectedCategoryDTO));
     }
 
@@ -82,7 +86,7 @@ public class CategoryServiceImplTest {
         Mockito.when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(category));
 
         CategoryDTO actualCategoryDTO = categoryService.getCategoryById(1);
-        CategoryDTO expectedCategoryDTO = CategoryServiceImpl.mapCategoryToDTO(category);
+        CategoryDTO expectedCategoryDTO = new ModelMapper().map(category, CategoryDTO.class);
         assertTrue(actualCategoryDTO.equals(expectedCategoryDTO));
     }
 
@@ -93,7 +97,7 @@ public class CategoryServiceImplTest {
         Mockito.when(categoryRepository.save(category)).thenReturn(category);
 
         CategoryDTO actualCategoryDTO = categoryService.updateCategory(1, categoryDTO);
-        CategoryDTO expectedCategoryDTO = CategoryServiceImpl.mapCategoryToDTO(category);
+        CategoryDTO expectedCategoryDTO = new ModelMapper().map(category, CategoryDTO.class);
         assertTrue(actualCategoryDTO.equals(expectedCategoryDTO));
     }
 

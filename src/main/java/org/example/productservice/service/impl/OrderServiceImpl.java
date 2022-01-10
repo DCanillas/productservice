@@ -1,21 +1,21 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.modelproject.dto.OrderDTO;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
 import org.example.modelproject.model.Product;
-import org.example.modelproject.dto.OrderDTO;
 import org.example.productservice.exception.ResourceNotFoundException;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.repository.OrderRepository;
 import org.example.productservice.repository.ProductRepository;
 import org.example.productservice.service.OrderService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.module.ResolutionException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,7 +35,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> getAllOrders(){
         log.info("OrderServiceImpl - Method getAllOrders");
-        List<OrderDTO> ordersDTO = mapListOrderToDTO(orderRepository.findAll());
+        List<OrderDTO> ordersDTO = orderRepository.findAll().stream()
+                        .map(order -> new ModelMapper().map(order, OrderDTO.class))
+                        .collect(Collectors.toList());
         log.info("OrderServiceImpl - Return getAllOrders: "+ordersDTO);
         return ordersDTO;
     }
@@ -46,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("OrderServiceImpl - Method createOrder");
         Order orderCreated = orderRepository.save(new Order());
         log.info("OrderServiceImpl - Created createOrder: "+orderCreated);
-        return mapOrderToDTO(orderCreated);
+        return new ModelMapper().map(orderCreated, OrderDTO.class);
     }
 
     // get order by id
@@ -56,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Found getOrderById: "+order);
-        return mapOrderToDTO(order);
+        return new ModelMapper().map(order, OrderDTO.class);
     }
 
     // assign customer to order
@@ -71,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("OrderServiceImpl - Customer Found updateOrder: "+customer);
         order.setCustomer(customer);
         orderRepository.save(order);
-        return mapOrderToDTO(order);
+        return new ModelMapper().map(order, OrderDTO.class);
     }
 
     // assign product to order
@@ -85,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("product not found for this id :: " + productId));
         log.info("OrderServiceImpl - Product Found assignProductToOrder: "+product);
         order.addProduct(product);
-        return mapOrderToDTO(orderRepository.save(order));
+        return new ModelMapper().map(orderRepository.save(order), OrderDTO.class);
     }
 
     // delete order by id
@@ -96,26 +98,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Found deleteOrder: "+order);
         orderRepository.deleteById(orderId);
-    }
-
-    static OrderDTO mapOrderToDTO (Order order){
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setId(order.getId());
-        if (order.getCustomer() != null){
-            orderDTO.setCustomerId(order.getCustomer().getId());
-        }
-        if (order.getProducts() != null){
-            orderDTO.setProducts(ProductServiceImpl.mapListProductToDTO(order.getProducts()));
-        }
-        return orderDTO;
-    }
-
-    static List<OrderDTO> mapListOrderToDTO (List<Order> orders){
-        List<OrderDTO> ordersDTO = new ArrayList<>();
-        for (Order order : orders) {
-            ordersDTO.add(mapOrderToDTO(order));
-        }
-        return ordersDTO;
     }
 
 }
