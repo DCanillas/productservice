@@ -44,10 +44,19 @@ public class OrderServiceImpl implements OrderService {
 
     // create order
     @Override
-    public OrderDTO createOrder(){
-        log.info("OrderServiceImpl - Method createOrder");
+    public OrderDTO createOrder(OrderDTO order){
+        log.info("OrderServiceImpl - Method createOrder: "+order);
         Order orderCreated = orderRepository.save(new Order());
         log.info("OrderServiceImpl - Created createOrder: "+orderCreated);
+        if (order != null){
+            if (Long.valueOf(order.getCustomerId()) != null && order.getCustomerId() != 0){
+                this.updateOrder(orderCreated.getId(), order.getCustomerId());
+            }
+            if (order.getProducts() != null){
+                order.getProducts().stream().forEach(product -> assignProductToOrder(orderCreated.getId(),product.getId()));
+            }
+        }
+
         return new ModelMapper().map(orderCreated, OrderDTO.class);
     }
 

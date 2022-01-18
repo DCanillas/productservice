@@ -62,7 +62,7 @@ public class OrderIntegrationTest {
         log.info("Test - createOrderTest");
         String url = "http://localhost:"+port+"/api/v1/order";
 
-        HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(null,null);
+        HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(new OrderDTO(),null);
         ResponseEntity<OrderDTO> response = testRestTemplate.exchange(url,
                 HttpMethod.POST, requestEntity, OrderDTO.class);
 
@@ -102,7 +102,7 @@ public class OrderIntegrationTest {
 
         String urlCreate = "http://localhost:"+port+"/api/v1/order";
 
-        HttpEntity<OrderDTO> requestEntityCreate = new HttpEntity<>(null,null);
+        HttpEntity<OrderDTO> requestEntityCreate = new HttpEntity<>(new OrderDTO(), null);
         ResponseEntity<OrderDTO> responseCreate = testRestTemplate.exchange(urlCreate,
                 HttpMethod.POST, requestEntityCreate, OrderDTO.class);
         log.info("Response: "+responseCreate.getBody());

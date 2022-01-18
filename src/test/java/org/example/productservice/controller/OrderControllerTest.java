@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,7 +66,7 @@ public class OrderControllerTest {
     @Test
     public void testCreateOrder() throws Exception {
         log.info("Test - testCreateOrder");
-        Mockito.when(orderService.createOrder()).thenReturn(order);
+        Mockito.when(orderService.createOrder(any(OrderDTO.class))).thenReturn(order);
 
         MvcResult mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.post(url)

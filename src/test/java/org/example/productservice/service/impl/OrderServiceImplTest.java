@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
@@ -95,9 +96,9 @@ public class OrderServiceImplTest {
     @Test
     public void testCreateOrder(){
         log.info("Test - testCreateOrder");
-        Mockito.when(orderRepository.save(new Order())).thenReturn(order);
+        Mockito.when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        OrderDTO actualOrderDTO = orderService.createOrder();
+        OrderDTO actualOrderDTO = orderService.createOrder(new OrderDTO());
         OrderDTO expectedOrderDTO = new ModelMapper().map(order, OrderDTO.class);
         assertTrue(actualOrderDTO.equals(expectedOrderDTO));
     }

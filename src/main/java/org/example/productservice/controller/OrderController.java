@@ -27,8 +27,8 @@ public class OrderController {
 
     // create order
     @PostMapping("")
-    public OrderDTO createOrder(){
-        return orderService.createOrder();
+    public OrderDTO createOrder(@RequestBody OrderDTO order){
+        return orderService.createOrder(order);
     }
 
     // get order by id
