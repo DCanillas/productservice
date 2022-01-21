@@ -1,7 +1,7 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.dto.MessageKafkaDTO;
+import org.example.modelproject.dto.LogMongoDTO;
 import org.example.modelproject.dto.OrderDTO;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
@@ -54,11 +54,11 @@ public class OrderServiceImpl implements OrderService {
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
         builder.scheme("https");
         String uri = builder.build().toUri().toString();
-        producerService.publishToTopic(new MessageKafkaDTO(
+        producerService.publishToTopic(new LogMongoDTO(
                 new Timestamp(System.currentTimeMillis()),
                 uri,
                 "requested",
-                order.toString()
+                String.valueOf(order)
         ));
         Order orderCreated = orderRepository.save(new Order());
         log.info("OrderServiceImpl - Created createOrder: "+orderCreated);
@@ -70,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
                 order.getProducts().stream().forEach(product -> assignProductToOrder(orderCreated.getId(),product.getId()));
             }
         }
-        producerService.publishToTopic(new MessageKafkaDTO(
+        producerService.publishToTopic(new LogMongoDTO(
                 new Timestamp(System.currentTimeMillis()),
                 uri,
                 "created",
