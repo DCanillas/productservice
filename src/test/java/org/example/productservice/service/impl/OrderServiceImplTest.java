@@ -3,11 +3,10 @@ package org.example.productservice.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.dto.CustomerDTO;
+import org.example.modelproject.dto.OrderDTO;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
 import org.example.modelproject.model.Product;
-import org.example.modelproject.dto.OrderDTO;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.repository.OrderRepository;
 import org.example.productservice.repository.ProductRepository;
@@ -26,7 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
 @Slf4j

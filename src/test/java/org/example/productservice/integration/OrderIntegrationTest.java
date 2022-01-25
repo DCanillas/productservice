@@ -86,6 +86,14 @@ public class OrderIntegrationTest {
     @Test
     public void updateOrderTest(){
         log.info("Test - updateOrderTest");
+
+        String urlCreate = "http://localhost:"+port+"/api/v1/order";
+
+        HttpEntity<OrderDTO> requestEntityCreate = new HttpEntity<>(new OrderDTO(), null);
+        ResponseEntity<OrderDTO> responseCreate = testRestTemplate.exchange(urlCreate,
+                HttpMethod.POST, requestEntityCreate, OrderDTO.class);
+        log.info("Response: "+responseCreate.getBody());
+
         String url = "http://localhost:"+port+"/api/v1/order/1/customer/1";
 
         HttpEntity<OrderDTO> requestEntity = new HttpEntity<>(null,null);
@@ -120,6 +128,13 @@ public class OrderIntegrationTest {
     @Test
     public void deleteOrderTest() throws JsonProcessingException {
         log.info("Test - deleteOrderTest");
+
+        String urlCreate = "http://localhost:"+port+"/api/v1/order";
+
+        HttpEntity<OrderDTO> requestEntityCreate = new HttpEntity<>(new OrderDTO(), null);
+        ResponseEntity<OrderDTO> responseCreate = testRestTemplate.exchange(urlCreate,
+                HttpMethod.POST, requestEntityCreate, OrderDTO.class);
+        log.info("Response: "+responseCreate.getBody());
 
         String urlGet = "http://localhost:"+port+"/api/v1/order";
 
