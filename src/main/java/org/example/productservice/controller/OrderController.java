@@ -21,14 +21,14 @@ public class OrderController {
 
     // get all orders
     @GetMapping("")
-    public List<OrderDTO> getAllOrders(){
-        return orderService.getAllOrders();
+    public ResponseEntity<List<OrderDTO>> getAllOrders(){
+        return ResponseEntity.ok().body(orderService.getAllOrders());
     }
 
     // create order
     @PostMapping("")
-    public OrderDTO createOrder(@RequestBody OrderDTO order){
-        return orderService.createOrder(order);
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO order){
+        return ResponseEntity.ok().body(orderService.createOrder(order));
     }
 
     // get order by id
@@ -46,14 +46,14 @@ public class OrderController {
 
     // assign product to order
     @PutMapping("{orderId}/product/{productId}")
-    public OrderDTO assignProductToOrder(@PathVariable(value="orderId") long orderId,
+    public ResponseEntity<OrderDTO> assignProductToOrder(@PathVariable(value="orderId") long orderId,
                                                           @PathVariable(value="productId") long productId) throws ResolutionException{
-        return orderService.assignProductToOrder(orderId, productId);
+        return ResponseEntity.ok().body(orderService.assignProductToOrder(orderId, productId));
     }
 
     // delete order by id
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteOrder(@PathVariable(value = "id") long orderId) throws ResolutionException{
+    public ResponseEntity<OrderDTO> deleteOrder(@PathVariable(value = "id") long orderId) throws ResolutionException{
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok().build();
     }

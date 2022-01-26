@@ -21,14 +21,14 @@ public class ProductController {
 
     // get all products
     @GetMapping("")
-    public List<ProductDTO> getAllProducts(){
-        return productService.getAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts(){
+        return ResponseEntity.ok().body(productService.getAllProducts());
     }
 
     @PostMapping("")
     // create product
-    public ProductDTO createProduct(@RequestBody ProductDTO product){
-        return productService.createProduct(product);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product){
+        return ResponseEntity.ok().body(productService.createProduct(product));
     }
 
     // get product by id
@@ -53,9 +53,9 @@ public class ProductController {
 
     // assign category to product
     @PutMapping("{productId}/category/{categoryId}")
-    public ProductDTO assignCategoryToProduct(@PathVariable(value="productId") long productId,
+    public ResponseEntity<ProductDTO> assignCategoryToProduct(@PathVariable(value="productId") long productId,
                                                           @PathVariable(value="categoryId") long categoryId) throws ResolutionException{
-        return productService.assignCategoryToProduct(productId, categoryId);
+        return ResponseEntity.ok().body(productService.assignCategoryToProduct(productId, categoryId));
     }
 
 }

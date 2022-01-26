@@ -21,14 +21,14 @@ public class CategoryController {
 
     // get all categories
     @GetMapping("")
-    public List<CategoryDTO> getAllCategories(){
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(){
+        return ResponseEntity.ok().body(categoryService.getAllCategories());
     }
 
     @PostMapping("")
     // create category
-    public CategoryDTO createCategory(@RequestBody CategoryDTO category){
-        return categoryService.createCategory(category);
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO category){
+        return ResponseEntity.ok().body(categoryService.createCategory(category));
     }
 
     // get category by id

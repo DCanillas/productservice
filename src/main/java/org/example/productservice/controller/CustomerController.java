@@ -21,14 +21,14 @@ public class CustomerController {
 
     // get all customers
     @GetMapping("")
-    public List<CustomerDTO> getAllCustomers(){
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers(){
+        return ResponseEntity.ok().body(customerService.getAllCustomers());
     }
 
     // create customer
     @PostMapping("")
-    public CustomerDTO createCustomer(@RequestBody CustomerDTO customer){
-        return customerService.createCustomer(customer);
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customer){
+        return ResponseEntity.ok().body(customerService.createCustomer(customer));
     }
 
     // get customer by id
