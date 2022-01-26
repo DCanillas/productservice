@@ -20,11 +20,13 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     // get all products
@@ -32,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> getAllProducts(){
         log.info("ProductServiceImpl - Method getAllProducts");
         List<ProductDTO> productsDTO = productRepository.findAll().stream()
-                .map(product -> new ModelMapper().map(product, ProductDTO.class))
+                .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
         log.info("ProductServiceImpl - Return getAllProducts: "+productsDTO);
         return productsDTO;
@@ -43,9 +45,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO createProduct(ProductDTO product){
         log.info("ProductServiceImpl - Method createProduct: "+product);
         Product productCreated = productRepository
-                .save(new ModelMapper().map(product, Product.class));
+                .save(modelMapper.map(product, Product.class));
         log.info("ProductServiceImpl - Created createProduct: "+productCreated);
-        return new ModelMapper().map(productCreated, ProductDTO.class);
+        return modelMapper.map(productCreated, ProductDTO.class);
     }
 
     // get product by id
@@ -55,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
         log.info("ProductServiceImpl - Found getProductById: "+product);
-        return new ModelMapper().map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductDTO.class);
     }
 
     // update product
@@ -69,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(productDetails.getDescription());
         product.setPrice(productDetails.getPrice());
         productRepository.save(product);
-        return new ModelMapper().map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductDTO.class);
     }
 
     // delete product by id
@@ -93,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("ProductServiceImpl - Category assignCategoryToProduct: "+category);
         product.addCategory(category);
-        return new ModelMapper().map(productRepository.save(product), ProductDTO.class);
+        return modelMapper.map(productRepository.save(product), ProductDTO.class);
     }
 
 }

@@ -29,12 +29,11 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 public class CustomerServiceImplTest {
     @Autowired
-    private ObjectMapper objectMapper;
+    private ModelMapper modelMapper;
 
     @Mock
     private CustomerRepository customerRepository;
-    
-    @InjectMocks
+
     private CustomerServiceImpl customerService;
 
     private List<CustomerDTO> listCustomersDTO;
@@ -44,6 +43,7 @@ public class CustomerServiceImplTest {
 
     @BeforeEach
     public void setUp() throws Exception{
+        customerService = new CustomerServiceImpl(customerRepository, modelMapper);
         listCustomersDTO = new ObjectMapper().readValue(
                 new File("src/test/resource/ListCustomersDTO.json"),
                 new TypeReference<List<CustomerDTO>>() {
@@ -65,7 +65,7 @@ public class CustomerServiceImplTest {
 
         List<CustomerDTO> actualListCustomersDTO = customerService.getAllCustomers();
         List<CustomerDTO> expectedListCustomersDTO = listCustomers.stream()
-                .map(customer -> new ModelMapper().map(customer, CustomerDTO.class))
+                .map(customer -> modelMapper.map(customer, CustomerDTO.class))
                 .collect(Collectors.toList());
         assertTrue(actualListCustomersDTO.equals(expectedListCustomersDTO));
     }
@@ -76,7 +76,7 @@ public class CustomerServiceImplTest {
         Mockito.when(customerRepository.save(customer)).thenReturn(customer);
 
         CustomerDTO actualCustomerDTO = customerService.createCustomer(customerDTO);
-        CustomerDTO expectedCustomerDTO = new ModelMapper().map(customer, CustomerDTO.class);
+        CustomerDTO expectedCustomerDTO = modelMapper.map(customer, CustomerDTO.class);
         assertTrue(actualCustomerDTO.equals(expectedCustomerDTO));
     }
 
@@ -86,7 +86,7 @@ public class CustomerServiceImplTest {
         Mockito.when(customerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(customer));
 
         CustomerDTO actualCustomerDTO = customerService.getCustomerById(1);
-        CustomerDTO expectedCustomerDTO = new ModelMapper().map(customer, CustomerDTO.class);
+        CustomerDTO expectedCustomerDTO = modelMapper.map(customer, CustomerDTO.class);
         assertTrue(actualCustomerDTO.equals(expectedCustomerDTO));
     }
 
@@ -97,7 +97,7 @@ public class CustomerServiceImplTest {
         Mockito.when(customerRepository.save(customer)).thenReturn(customer);
 
         CustomerDTO actualCustomerDTO = customerService.updateCustomer(1, customerDTO);
-        CustomerDTO expectedCustomerDTO = new ModelMapper().map(customer, CustomerDTO.class);
+        CustomerDTO expectedCustomerDTO = modelMapper.map(customer, CustomerDTO.class);
         assertTrue(actualCustomerDTO.equals(expectedCustomerDTO));
     }
 

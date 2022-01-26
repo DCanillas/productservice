@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 public class ProductServiceImplTest {
     @Autowired
-    private ObjectMapper objectMapper;
+    private ModelMapper modelMapper;
 
     @Mock
     private ProductRepository productRepository;
@@ -39,7 +39,6 @@ public class ProductServiceImplTest {
     @Mock
     private CategoryRepository categoryRepository;
 
-    @InjectMocks
     private ProductServiceImpl productService;
 
     private List<ProductDTO> listProductsDTO;
@@ -50,6 +49,7 @@ public class ProductServiceImplTest {
 
     @BeforeEach
     public void setUp() throws Exception{
+        productService = new ProductServiceImpl(productRepository, categoryRepository, modelMapper);
         listProductsDTO = new ObjectMapper().readValue(
                 new File("src/test/resource/ListProductsDTO.json"),
                 new TypeReference<List<ProductDTO>>() {
@@ -76,7 +76,7 @@ public class ProductServiceImplTest {
 
         List<ProductDTO> actualListProductsDTO = productService.getAllProducts();
         List<ProductDTO> expectedListProductsDTO = listProducts.stream()
-                .map(product -> new ModelMapper().map(product, ProductDTO.class))
+                .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
         assertTrue(actualListProductsDTO.equals(expectedListProductsDTO));
     }
@@ -89,7 +89,7 @@ public class ProductServiceImplTest {
 
         ProductDTO actualProductDTO = productService.createProduct(productDTO);
         ProductDTO expectedProductDTO =
-                new ModelMapper().map(product, ProductDTO.class);
+                modelMapper.map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -100,7 +100,7 @@ public class ProductServiceImplTest {
 
         ProductDTO actualProductDTO = productService.getProductById(1);
         ProductDTO expectedProductDTO =
-                new ModelMapper().map(product, ProductDTO.class);
+                modelMapper.map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -112,7 +112,7 @@ public class ProductServiceImplTest {
 
         ProductDTO actualProductDTO = productService.updateProduct(1, productDTO);
         ProductDTO expectedProductDTO =
-                new ModelMapper().map(product, ProductDTO.class);
+                modelMapper.map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 
@@ -136,7 +136,7 @@ public class ProductServiceImplTest {
 
         ProductDTO actualProductDTO = productService.assignCategoryToProduct(1, 1);
         ProductDTO expectedProductDTO =
-                new ModelMapper().map(product, ProductDTO.class);
+                modelMapper.map(product, ProductDTO.class);
         assertTrue(actualProductDTO.equals(expectedProductDTO));
     }
 }

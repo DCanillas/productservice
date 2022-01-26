@@ -27,13 +27,15 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final ProducerServiceImpl producerService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, ProducerServiceImpl producerService) {
+    public OrderServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, ProducerServiceImpl producerService, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.producerService = producerService;
+        this.modelMapper = modelMapper;
     }
 
     // get all orders
@@ -41,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> getAllOrders(){
         log.info("OrderServiceImpl - Method getAllOrders");
         List<OrderDTO> ordersDTO = orderRepository.findAll().stream()
-                        .map(order -> new ModelMapper().map(order, OrderDTO.class))
+                        .map(order -> modelMapper.map(order, OrderDTO.class))
                         .collect(Collectors.toList());
         log.info("OrderServiceImpl - Return getAllOrders: "+ordersDTO);
         return ordersDTO;
@@ -76,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
                 "created",
                 orderCreated.toString()
         ));
-        return new ModelMapper().map(orderCreated, OrderDTO.class);
+        return modelMapper.map(orderCreated, OrderDTO.class);
     }
 
     // get order by id
@@ -86,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         log.info("OrderServiceImpl - Found getOrderById: "+order);
-        return new ModelMapper().map(order, OrderDTO.class);
+        return modelMapper.map(order, OrderDTO.class);
     }
 
     // assign customer to order
@@ -101,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("OrderServiceImpl - Customer Found updateOrder: "+customer);
         order.setCustomer(customer);
         orderRepository.save(order);
-        return new ModelMapper().map(order, OrderDTO.class);
+        return modelMapper.map(order, OrderDTO.class);
     }
 
     // assign product to order
@@ -115,7 +117,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("product not found for this id :: " + productId));
         log.info("OrderServiceImpl - Product Found assignProductToOrder: "+product);
         order.addProduct(product);
-        return new ModelMapper().map(orderRepository.save(order), OrderDTO.class);
+        return modelMapper.map(orderRepository.save(order), OrderDTO.class);
     }
 
     // delete order by id

@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     // get all categories
@@ -28,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CategoryDTO> getAllCategories() {
         log.info("CategoryServiceImpl - Method getAllCategories");
         List<CategoryDTO> categoriesDTO = categoryRepository.findAll().stream()
-                .map(category -> new ModelMapper().map(category, CategoryDTO.class))
+                .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .collect(Collectors.toList());
         log.info("CategoryServiceImpl - Return getAllCategories: "+categoriesDTO);
         return categoriesDTO;
@@ -39,9 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO createCategory(CategoryDTO category) {
         log.info("CategoryServiceImpl - Method createCategory: "+category);
         Category categoryCreated = categoryRepository
-                .save(new ModelMapper().map(category, Category.class));
+                .save(modelMapper.map(category, Category.class));
         log.info("CategoryServiceImpl - Created createCategory: "+categoryCreated);
-        return new ModelMapper().map(categoryCreated, CategoryDTO.class);
+        return modelMapper.map(categoryCreated, CategoryDTO.class);
     }
 
     // get category by id
@@ -51,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found for this id :: " + categoryId));
         log.info("CategoryServiceImpl - Found getCategoryById: "+category);
-        return new ModelMapper().map(category, CategoryDTO.class);
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     // update category
@@ -64,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryDetails.getName());
         category.setDescription(categoryDetails.getDescription());
         categoryRepository.save(category);
-        return new ModelMapper().map(category, CategoryDTO.class);
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     // delete category by id

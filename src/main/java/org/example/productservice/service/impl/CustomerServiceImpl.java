@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
+        this.modelMapper = modelMapper;
     }
 
     // get all customers
@@ -28,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getAllCustomers(){
         log.info("CustomerServiceImpl - Method getAllCustomers");
         List<CustomerDTO> customersDTO = customerRepository.findAll().stream()
-                .map(customer -> new ModelMapper().map(customer, CustomerDTO.class))
+                .map(customer -> modelMapper.map(customer, CustomerDTO.class))
                 .collect(Collectors.toList());
         log.info("CustomerServiceImpl - Return getAllCustomers: "+customersDTO);
         return customersDTO;
@@ -38,9 +40,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO createCustomer(CustomerDTO customer){
         log.info("CustomerServiceImpl - Method createCustomer");
-        Customer customerCreated = customerRepository.save(new ModelMapper().map(customer, Customer.class));
+        Customer customerCreated = customerRepository.save(modelMapper.map(customer, Customer.class));
         log.info("CustomerServiceImpl - Created createCustomer: "+customerCreated);
-        return new ModelMapper().map(customer, CustomerDTO.class);
+        return modelMapper.map(customer, CustomerDTO.class);
     }
 
     // get customer by id
@@ -50,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
         log.info("CustomerServiceImpl - Found getCustomerById: "+customer);
-        return new ModelMapper().map(customer, CustomerDTO.class);
+        return modelMapper.map(customer, CustomerDTO.class);
     }
 
     // update customer
@@ -63,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setName(customerDetails.getName());
         customer.setEmail(customerDetails.getEmail());
         customerRepository.save(customer);
-        return new ModelMapper().map(customer, CustomerDTO.class);
+        return modelMapper.map(customer, CustomerDTO.class);
 
     }
 
