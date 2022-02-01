@@ -1,7 +1,6 @@
 package org.example.productservice.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.modelproject.dto.LogMongoDTO;
 import org.example.modelproject.dto.OrderDTO;
 import org.example.modelproject.model.Customer;
 import org.example.modelproject.model.Order;
@@ -14,9 +13,7 @@ import org.example.productservice.service.OrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +23,13 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
-    private final ProducerServiceImpl producerService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, ProducerServiceImpl producerService, ModelMapper modelMapper) {
+    public OrderServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
-        this.producerService = producerService;
         this.modelMapper = modelMapper;
     }
 
@@ -53,15 +48,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO createOrder(OrderDTO order){
         log.info("OrderServiceImpl - Method createOrder: "+order);
-        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-        builder.scheme("https");
-        String uri = builder.build().toUri().toString();
-        producerService.publishToTopic(new LogMongoDTO(
-                new Timestamp(System.currentTimeMillis()),
-                uri,
-                "requested",
-                String.valueOf(order)
-        ));
         Order orderCreated = orderRepository.save(new Order());
         log.info("OrderServiceImpl - Created createOrder: "+orderCreated);
         if (order != null){
@@ -72,12 +58,6 @@ public class OrderServiceImpl implements OrderService {
                 order.getProducts().stream().forEach(product -> assignProductToOrder(orderCreated.getId(),product.getId()));
             }
         }
-        producerService.publishToTopic(new LogMongoDTO(
-                new Timestamp(System.currentTimeMillis()),
-                uri,
-                "created",
-                orderCreated.toString()
-        ));
         return modelMapper.map(orderCreated, OrderDTO.class);
     }
 

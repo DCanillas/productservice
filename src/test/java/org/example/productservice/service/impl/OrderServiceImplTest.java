@@ -43,9 +43,6 @@ public class OrderServiceImplTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private ProducerServiceImpl producerService;
-
     private OrderServiceImpl orderService;
 
     private List<OrderDTO> listOrdersDTO;
@@ -58,7 +55,7 @@ public class OrderServiceImplTest {
     @BeforeEach
     public void setUp() throws Exception{
         orderService = new OrderServiceImpl(orderRepository,
-                customerRepository, productRepository, producerService, modelMapper);
+                customerRepository, productRepository, modelMapper);
         listOrdersDTO = new ObjectMapper().readValue(
                 new File("src/test/resource/ListOrdersDTO.json"),
                 new TypeReference<List<OrderDTO>>() {
