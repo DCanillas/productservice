@@ -58,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
                 order.getProducts().stream().forEach(product -> assignProductToOrder(orderCreated.getId(),product.getId()));
             }
         }
+        log.info("OrderServiceImpl - Modified createOrder: "+order);
         return modelMapper.map(orderCreated, OrderDTO.class);
     }
 
