@@ -13,7 +13,9 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest
 public class CategoryServiceImplTest {
 
@@ -57,6 +60,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetAllCategories(){
         log.info("Test - testGetAllCategories");
 
@@ -70,6 +74,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testCreateCategory(){
         log.info("Test - testCreateCategory");
         Mockito.when(categoryRepository.save(category)).thenReturn(category);
@@ -80,6 +85,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetCategoryById(){
         log.info("Test - testGetCategoryById");
         Mockito.when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(category));
@@ -90,6 +96,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testUpdateCategory(){
         log.info("Test - testUpdateCategory");
         Mockito.when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(category));
@@ -101,6 +108,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testDeleteCategory(){
         log.info("Test - testDeleteCategory");
         Mockito.when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(category));

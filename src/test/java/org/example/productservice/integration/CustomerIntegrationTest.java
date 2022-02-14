@@ -15,7 +15,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerIntegrationTest {
     @LocalServerPort
@@ -45,80 +48,46 @@ public class CustomerIntegrationTest {
     }
 
     @Test
-    public void getAllCustomersTest(){
-        log.info("Test - getAllCustomersTest");
-        String url = "http://localhost:"+port+"/api/v1/customer";
-
-        HttpEntity<List<CustomerDTO>> requestEntity = new HttpEntity<>(null,null);
-        ResponseEntity<List> response = testRestTemplate.exchange(url,
-                HttpMethod.GET, requestEntity, List.class);
-
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void createCustomerTest(){
+    @Transactional
+    public void customersIntegrationTest(){
         log.info("Test - createCustomerTest");
-        String url = "http://localhost:"+port+"/api/v1/customer";
+        String urlCreate = "http://localhost:"+port+"/api/v1/customer";
+        HttpEntity<CustomerDTO> requestEntityCreate = new HttpEntity<>(customer,null);
+        ResponseEntity<CustomerDTO> responseCreate = testRestTemplate.exchange(urlCreate,
+                HttpMethod.POST, requestEntityCreate, CustomerDTO.class);
+        log.info("Response createCustomerTest: "+responseCreate.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseCreate.getStatusCode());
 
-        HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
-        ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.POST, requestEntity, CustomerDTO.class);
-
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void getCustomerByIdTest(){
         log.info("Test - getCustomerByIdTest");
-        String url = "http://localhost:"+port+"/api/v1/customer/1";
+        String urlGet = "http://localhost:"+port+"/api/v1/customer/1";
+        HttpEntity<CustomerDTO> requestEntityGet = new HttpEntity<>(customer,null);
+        ResponseEntity<CustomerDTO> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, CustomerDTO.class);
+        log.info("Response getCustomerByIdTest: "+responseGet.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseGet.getStatusCode());
 
-        HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
-        ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.GET, requestEntity, CustomerDTO.class);
-
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void updateCustomerTest(){
         log.info("Test - updateCustomerTest");
-        String url = "http://localhost:"+port+"/api/v1/customer/1";
+        String urlUpdate = "http://localhost:"+port+"/api/v1/customer/1";
+        HttpEntity<CustomerDTO> requestEntityUpdate = new HttpEntity<>(customer,null);
+        ResponseEntity<CustomerDTO> responseUpdate = testRestTemplate.exchange(urlUpdate,
+                HttpMethod.PUT, requestEntityUpdate, CustomerDTO.class);
+        log.info("Response updateCustomerTest: "+responseUpdate.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseUpdate.getStatusCode());
 
-        HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
-        ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.PUT, requestEntity, CustomerDTO.class);
+        log.info("Test - getAllCustomersTest");
+        String urlGetAll = "http://localhost:"+port+"/api/v1/customer";
+        HttpEntity<List<CustomerDTO>> requestEntityGetAll = new HttpEntity<>(null,null);
+        ResponseEntity<List> responseGetAll = testRestTemplate.exchange(urlGetAll,
+                HttpMethod.GET, requestEntityGetAll, List.class);
+        log.info("Response getAllCustomersTest: "+responseGetAll.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseGetAll.getStatusCode());
 
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void deleteCustomerTest() throws JsonProcessingException {
         log.info("Test - deleteCustomerTest");
-
-        String urlGet = "http://localhost:"+port+"/api/v1/customer";
-
-        HttpEntity<List<CustomerDTO>> requestEntityGet = new HttpEntity<>(null,null);
-        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
-                HttpMethod.GET, requestEntityGet, String.class);
-
-        CustomerDTO[] customers = objectMapper.readValue(responseGet.getBody(),
-                CustomerDTO[].class);
-        List<CustomerDTO> customerList = Arrays.asList(customers);
-
-        Long customerListMaxId = customerList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
-
-        String url = "http://localhost:"+port+"/api/v1/customer/"+customerListMaxId;
-        HttpEntity<CustomerDTO> requestEntity = new HttpEntity<>(customer,null);
-
-        ResponseEntity<CustomerDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.DELETE, requestEntity, CustomerDTO.class);
-        log.info("Response: "+response.getBody());
-
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
+        String urlDel = "http://localhost:"+port+"/api/v1/customer/1";
+        HttpEntity<CustomerDTO> requestEntityDel = new HttpEntity<>(customer,null);
+        ResponseEntity<CustomerDTO> responseDel = testRestTemplate.exchange(urlDel,
+                HttpMethod.DELETE, requestEntityDel, CustomerDTO.class);
+        log.info("Response deleteCustomerTest: "+responseDel.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseDel.getStatusCode());
     }
 }

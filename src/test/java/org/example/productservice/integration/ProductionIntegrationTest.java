@@ -15,7 +15,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductionIntegrationTest {
     @LocalServerPort
@@ -45,81 +48,46 @@ public class ProductionIntegrationTest {
     }
 
     @Test
-    public void getAllProductsTest(){
-        log.info("Test - getAllProductsTest");
-        String url = "http://localhost:"+port+"/api/v1/product";
-
-        HttpEntity<List<ProductDTO>> requestEntity = new HttpEntity<>(null,null);
-        ResponseEntity<List> response = testRestTemplate.exchange(url,
-                HttpMethod.GET, requestEntity, List.class);
-
-        log.info("Response: "+response.getBody());
-
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void createProductTest(){
+    @Transactional
+    public void productsIntegrationTest(){
         log.info("Test - createProductTest");
-        String url = "http://localhost:"+port+"/api/v1/product";
+        String urlCreate = "http://localhost:"+port+"/api/v1/product";
+        HttpEntity<ProductDTO> requestEntityCreate = new HttpEntity<>(product,null);
+        ResponseEntity<ProductDTO> responseCreate = testRestTemplate.exchange(urlCreate,
+                HttpMethod.POST, requestEntityCreate, ProductDTO.class);
+        log.info("Response: "+responseCreate.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseCreate.getStatusCode());
 
-        HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
-        ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.POST, requestEntity, ProductDTO.class);
-
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void getProductByIdTest(){
         log.info("Test - getProductByIdTest");
-        String url = "http://localhost:"+port+"/api/v1/product/1";
+        String urlGet = "http://localhost:"+port+"/api/v1/product/1";
+        HttpEntity<ProductDTO> requestEntityGet = new HttpEntity<>(product,null);
+        ResponseEntity<ProductDTO> responseGet = testRestTemplate.exchange(urlGet,
+                HttpMethod.GET, requestEntityGet, ProductDTO.class);
+        log.info("Response: "+responseGet.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseGet.getStatusCode());
 
-        HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
-        ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.GET, requestEntity, ProductDTO.class);
-
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void updateProductTest(){
         log.info("Test - updateProductTest");
-        String url = "http://localhost:"+port+"/api/v1/product/1";
+        String urlUpdate = "http://localhost:"+port+"/api/v1/product/1";
+        HttpEntity<ProductDTO> requestEntityUpdate = new HttpEntity<>(product,null);
+        ResponseEntity<ProductDTO> responseUpdate = testRestTemplate.exchange(urlUpdate,
+                HttpMethod.PUT, requestEntityUpdate, ProductDTO.class);
+        log.info("Response: "+responseUpdate.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseUpdate.getStatusCode());
 
-        HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
-        ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.PUT, requestEntity, ProductDTO.class);
+        log.info("Test - getAllProductsTest");
+        String urlGetAll = "http://localhost:"+port+"/api/v1/product";
+        HttpEntity<List<ProductDTO>> requestEntityGetAll = new HttpEntity<>(null,null);
+        ResponseEntity<List> responseGetAll = testRestTemplate.exchange(urlGetAll,
+                HttpMethod.GET, requestEntityGetAll, List.class);
+        log.info("Response: "+responseGetAll.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseGetAll.getStatusCode());
 
-        log.info("Response: "+response.getBody());
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
-    }
-
-    @Test
-    public void deleteProductTest() throws JsonProcessingException {
         log.info("Test - deleteProductTest");
-
-        String urlGet = "http://localhost:"+port+"/api/v1/product";
-
-        HttpEntity<List<ProductDTO>> requestEntityGet = new HttpEntity<>(null,null);
-        ResponseEntity<String> responseGet = testRestTemplate.exchange(urlGet,
-                HttpMethod.GET, requestEntityGet, String.class);
-
-        ProductDTO[] products = objectMapper.readValue(responseGet.getBody(),
-                ProductDTO[].class);
-        List<ProductDTO> productsList = Arrays.asList(products);
-
-        Long productsListMaxId = productsList.stream().max((x,y) -> (int) (x.getId() - y.getId())).get().getId();
-
-        String url = "http://localhost:"+port+"/api/v1/product/"+productsListMaxId;
-        HttpEntity<ProductDTO> requestEntity = new HttpEntity<>(product,null);
-
-        ResponseEntity<ProductDTO> response = testRestTemplate.exchange(url,
-                HttpMethod.DELETE, requestEntity, ProductDTO.class);
-        log.info("Response: "+response.getBody());
-
-        assertThat(HttpStatus.OK).isEqualTo(response.getStatusCode());
+        String urlDel = "http://localhost:"+port+"/api/v1/product/1";
+        HttpEntity<ProductDTO> requestEntityDel = new HttpEntity<>(product,null);
+        ResponseEntity<ProductDTO> responseDel = testRestTemplate.exchange(urlDel,
+                HttpMethod.DELETE, requestEntityDel, ProductDTO.class);
+        log.info("Response: "+responseDel.getBody());
+        assertThat(HttpStatus.OK).isEqualTo(responseDel.getStatusCode());
     }
 }

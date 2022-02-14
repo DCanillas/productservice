@@ -17,7 +17,9 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest
 public class OrderServiceImplTest {
     @Autowired
@@ -80,6 +83,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetAllOrders(){
         log.info("Test - testGetAllOrders");
 
@@ -93,6 +97,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testCreateOrder(){
         log.info("Test - testCreateOrder");
         Mockito.when(orderRepository.save(any(Order.class))).thenReturn(order);
@@ -103,6 +108,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetOrderById(){
         log.info("Test - testGetOrderById");
         Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
@@ -113,6 +119,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testUpdateOrder(){
         log.info("Test - testUpdateOrder");
         Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
@@ -125,6 +132,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testDeleteOrder(){
         log.info("Test - testDeleteOrder");
         Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));
@@ -136,6 +144,7 @@ public class OrderServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testAssignProductToOrder(){
         log.info("Test - testAssignProductToOrder");
         Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(order));

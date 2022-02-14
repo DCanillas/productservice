@@ -15,7 +15,9 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest
 public class ProductServiceImplTest {
     @Autowired
@@ -67,6 +70,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetAllProducts(){
         log.info("Test - testGetAllProducts");
 
@@ -80,6 +84,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testCreateProduct(){
         log.info("Test - testCreateProduct");
         log.info("Test - product: "+product);
@@ -92,6 +97,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetProductById(){
         log.info("Test - testGetProductById");
         Mockito.when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
@@ -103,6 +109,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testUpdateProduct(){
         log.info("Test - testUpdateProduct");
         Mockito.when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
@@ -115,6 +122,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testDeleteProduct(){
         log.info("Test - testDeleteProduct");
         Mockito.when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));
@@ -126,6 +134,7 @@ public class ProductServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testAssignCategoryToProduct(){
         log.info("Test - testAssignCategoryToProduct");
         Mockito.when(productRepository.findById(anyLong())).thenReturn(Optional.ofNullable(product));

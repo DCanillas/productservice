@@ -13,7 +13,9 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 
 @Slf4j
+@ActiveProfiles("test")
 @SpringBootTest
 public class CustomerServiceImplTest {
     @Autowired
@@ -56,6 +59,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetAllCustomers(){
         log.info("Test - testGetAllCustomers");
 
@@ -69,6 +73,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testCreateCustomer(){
         log.info("Test - testCreateCustomer");
         Mockito.when(customerRepository.save(customer)).thenReturn(customer);
@@ -79,6 +84,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testGetCustomerById(){
         log.info("Test - testGetCustomerById");
         Mockito.when(customerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(customer));
@@ -89,6 +95,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testUpdateCustomer(){
         log.info("Test - testUpdateCustomer");
         Mockito.when(customerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(customer));
@@ -100,6 +107,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void testDeleteCustomer(){
         log.info("Test - testDeleteCustomer");
         Mockito.when(customerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(customer));
