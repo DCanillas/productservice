@@ -10,6 +10,7 @@ import org.example.modelproject.model.Product;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.repository.OrderRepository;
 import org.example.productservice.repository.ProductRepository;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.times;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = TestSecurityConfig.class)
 public class OrderServiceImplTest {
     @Autowired
     private ModelMapper modelMapper;

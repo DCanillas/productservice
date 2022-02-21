@@ -4,14 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.dto.ProductDTO;
+import org.example.productservice.security.TestSecurityConfig;
 import org.example.productservice.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -24,25 +25,23 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(ProductController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = TestSecurityConfig.class)
 public class ProductControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private ProductServiceImpl productService;
 
+    private ProductController productController;
+
     private List<ProductDTO> listProducts;
     private ProductDTO product;
-    private final String url = "/api/v1/product";
-    private final String urlId = "/api/v1/product/1";
-    private final String urlIdC = "/api/v1/product/1/category/1";
 
     @BeforeEach
     public void setUp() throws Exception {
+        productController = new ProductController(productService);
         listProducts = new ObjectMapper().readValue(
                 new File("src/test/resource/ListProductsDTO.json"),
                 new TypeReference<List<ProductDTO>>() {
@@ -55,9 +54,9 @@ public class ProductControllerTest {
         log.info("Test - testGetAllProducts");
         Mockito.when(productService.getAllProducts()).thenReturn(listProducts);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url)).andExpect(status().isOk()).andReturn();
+        ResponseEntity<List<ProductDTO>> response = productController.getAllProducts();
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(listProducts);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -67,13 +66,9 @@ public class ProductControllerTest {
         log.info("Test - testCreateProduct");
         Mockito.when(productService.createProduct(any(ProductDTO.class))).thenReturn(product);
 
-        MvcResult mvcResult = mockMvc.perform(
-                        MockMvcRequestBuilders.post(url)
-                                .contentType("application/json")
-                                .content(objectMapper.writeValueAsString(product)))
-                .andExpect(status().isOk()).andReturn();
+        ResponseEntity<ProductDTO> response = productController.createProduct(product);
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(product);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -83,9 +78,9 @@ public class ProductControllerTest {
         log.info("Test - testGetProductById");
         Mockito.when(productService.getProductById(anyLong())).thenReturn(product);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(urlId)).andExpect(status().isOk()).andReturn();
+        ResponseEntity<ProductDTO> response = productController.getProductById(product.getId());
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(product);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -95,12 +90,9 @@ public class ProductControllerTest {
         log.info("Test - testUpdateProduct");
         Mockito.when(productService.updateProduct(anyLong(), any(ProductDTO.class))).thenReturn(product);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(urlId)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(product)))
-                .andExpect(status().isOk()).andReturn();;
+        ResponseEntity<ProductDTO> response = productController.updateProduct(product.getId(), product);
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(product);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -110,9 +102,9 @@ public class ProductControllerTest {
         log.info("Test - testAssignCategoryToProduct");
         Mockito.when(productService.assignCategoryToProduct(anyLong(), anyLong())).thenReturn(product);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(urlIdC)).andExpect(status().isOk()).andReturn();
+        ResponseEntity<ProductDTO> response = productController.assignCategoryToProduct(product.getId(), product.getId());
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(product);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -121,6 +113,7 @@ public class ProductControllerTest {
     public void testDeleteProduct() throws Exception{
         log.info("Test - testDeleteProduct");
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(urlId)).andExpect(status().isOk());
+        ResponseEntity<ProductDTO> response = productController.deleteProduct(product.getId());
+        assertThat(response.getStatusCode()).isEqualTo(ResponseEntity.ok().build().getStatusCode());
     }
 }

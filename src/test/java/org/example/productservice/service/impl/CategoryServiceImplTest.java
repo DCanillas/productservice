@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.dto.CategoryDTO;
 import org.example.modelproject.model.Category;
 import org.example.productservice.repository.CategoryRepository;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.times;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = TestSecurityConfig.class)
 public class CategoryServiceImplTest {
 
     @Autowired

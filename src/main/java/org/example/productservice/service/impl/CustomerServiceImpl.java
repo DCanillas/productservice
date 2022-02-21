@@ -42,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("CustomerServiceImpl - Method createCustomer");
         Customer customerCreated = customerRepository.save(modelMapper.map(customer, Customer.class));
         log.info("CustomerServiceImpl - Created createCustomer: "+customerCreated);
-        return modelMapper.map(customer, CustomerDTO.class);
+        return modelMapper.map(customerCreated, CustomerDTO.class);
     }
 
     // get customer by id

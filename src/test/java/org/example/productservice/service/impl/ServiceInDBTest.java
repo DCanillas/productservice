@@ -7,6 +7,7 @@ import org.example.productservice.repository.CategoryRepository;
 import org.example.productservice.repository.CustomerRepository;
 import org.example.productservice.repository.OrderRepository;
 import org.example.productservice.repository.ProductRepository;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = TestSecurityConfig.class)
 public class ServiceInDBTest {
 
     @Autowired

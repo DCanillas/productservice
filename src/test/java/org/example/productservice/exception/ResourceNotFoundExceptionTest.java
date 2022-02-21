@@ -1,6 +1,7 @@
 package org.example.productservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = TestSecurityConfig.class)
 public class ResourceNotFoundExceptionTest {
 
     @Test

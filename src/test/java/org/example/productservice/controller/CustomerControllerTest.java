@@ -4,16 +4,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.dto.CustomerDTO;
+import org.example.productservice.security.TestSecurityConfig;
 import org.example.productservice.service.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.File;
 import java.util.List;
@@ -21,27 +21,25 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
-@WebMvcTest(CustomerController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = TestSecurityConfig.class)
 public class CustomerControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private CustomerServiceImpl customerService;
 
+    private CustomerController customerController;
+
     private List<CustomerDTO> listCustomers;
     private CustomerDTO customer;
-    private final String url = "/api/v1/customer";
-    private final String urlId = "/api/v1/customer/1";
 
     @BeforeEach
     public void setUp() throws Exception {
+        customerController = new CustomerController(customerService);
         listCustomers = new ObjectMapper().readValue(
                 new File("src/test/resource/ListCustomersDTO.json"),
                 new TypeReference<List<CustomerDTO>>() {
@@ -54,9 +52,9 @@ public class CustomerControllerTest {
         log.info("Test - testGetAllCustomers");
         Mockito.when(customerService.getAllCustomers()).thenReturn(listCustomers);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url)).andExpect(status().isOk()).andReturn();
+        ResponseEntity<List<CustomerDTO>> response = customerController.getAllCustomers();
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(listCustomers);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -66,13 +64,9 @@ public class CustomerControllerTest {
         log.info("Test - testCreateCustomer");
         Mockito.when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(customer);
 
-        MvcResult mvcResult = mockMvc.perform(
-                        MockMvcRequestBuilders.post(url)
-                                .contentType("application/json")
-                                .content(objectMapper.writeValueAsString(customer)))
-                .andExpect(status().isOk()).andReturn();
+        ResponseEntity<CustomerDTO> response = customerController.createCustomer(customer);
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(customer);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -82,9 +76,9 @@ public class CustomerControllerTest {
         log.info("Test - testGetCustomerById");
         Mockito.when(customerService.getCustomerById(anyLong())).thenReturn(customer);
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(urlId)).andExpect(status().isOk()).andReturn();
+        ResponseEntity<CustomerDTO> response = customerController.getCustomerById(customer.getId());
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(customer);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -94,13 +88,9 @@ public class CustomerControllerTest {
         log.info("Test - testUpdateCustomer");
         Mockito.when(customerService.updateCustomer(anyLong(), any(CustomerDTO.class))).thenReturn(customer);
 
-        MvcResult mvcResult = mockMvc.perform(
-                        MockMvcRequestBuilders.put(urlId)
-                                .contentType("application/json")
-                                .content(objectMapper.writeValueAsString(customer)))
-                .andExpect(status().isOk()).andReturn();
+        ResponseEntity<CustomerDTO> response = customerController.updateCustomer(customer.getId(), customer);
 
-        String actualJsonResponse = mvcResult.getResponse().getContentAsString();
+        String actualJsonResponse = objectMapper.writeValueAsString(response.getBody());
         String expectedJsonResponse = objectMapper.writeValueAsString(customer);
         assertThat(actualJsonResponse).isEqualTo(expectedJsonResponse);
     }
@@ -109,7 +99,8 @@ public class CustomerControllerTest {
     public void testDeleteCustomer() throws Exception{
         log.info("Test - testDeleteCustomer");
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(urlId)).andExpect(status().isOk());
+        ResponseEntity<CustomerDTO> response = customerController.deleteCustomer(customer.getId());
+        assertThat(response.getStatusCode()).isEqualTo(ResponseEntity.ok().build().getStatusCode());
     }
 }
 

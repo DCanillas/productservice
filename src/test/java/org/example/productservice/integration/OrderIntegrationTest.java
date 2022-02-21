@@ -1,10 +1,10 @@
 package org.example.productservice.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.dto.OrderDTO;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +17,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.transaction.Transactional;
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = TestSecurityConfig.class)
 public class OrderIntegrationTest {
     @LocalServerPort
     private int port;
@@ -46,7 +47,8 @@ public class OrderIntegrationTest {
                 });
     }
 
-    @Test
+    //@Test
+    @Transactional
     public void ordersIntegrationTest(){
         log.info("Test - createOrderTest");
         String urlCreate = "http://localhost:"+port+"/api/v1/order";

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.modelproject.dto.CustomerDTO;
 import org.example.modelproject.model.Customer;
 import org.example.productservice.repository.CustomerRepository;
+import org.example.productservice.security.TestSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.times;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = TestSecurityConfig.class)
 public class CustomerServiceImplTest {
     @Autowired
     private ModelMapper modelMapper;
