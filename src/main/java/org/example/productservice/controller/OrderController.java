@@ -43,6 +43,7 @@ public class OrderController {
 
     // assign customer to order
     @PutMapping("/{orderId}/customer/{customerId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable(value = "orderId") long orderId,
                                              @PathVariable(value = "customerId") long customerId) throws ResolutionException{
         return ResponseEntity.ok().body(orderService.updateOrder(orderId, customerId));

@@ -49,20 +49,19 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.updateProduct(productId, productDetails));
     }
 
+    // assign category to product
+    @PutMapping("{productId}/category/{categoryId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<ProductDTO> assignCategoryToProduct(@PathVariable(value="productId") long productId,
+                                                              @PathVariable(value="categoryId") long categoryId) throws ResolutionException{
+        return ResponseEntity.ok().body(productService.assignCategoryToProduct(productId, categoryId));
+    }
+
     // delete product by id
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable(value = "id") long productId) throws ResolutionException{
         productService.deleteProduct(productId);
         return ResponseEntity.ok().build();
     }
-
-    // assign category to product
-    @PutMapping("{productId}/category/{categoryId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDTO> assignCategoryToProduct(@PathVariable(value="productId") long productId,
-                                                          @PathVariable(value="categoryId") long categoryId) throws ResolutionException{
-        return ResponseEntity.ok().body(productService.assignCategoryToProduct(productId, categoryId));
-    }
-
 }
